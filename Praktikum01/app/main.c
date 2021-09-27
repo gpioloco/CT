@@ -1,7 +1,7 @@
 #include "utils_ctboard.h"
 
 #define LED_ADDR 0x60000100
-#define LED_VALUE 0x12
+#define LED_VALUE 0x13
 
 int main(void) {
     while (1) {
