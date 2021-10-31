@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\build\</OutputDirectory>
-          <OutputName>bitmanipulation</OutputName>
+          <OutputName>sum_diff</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -373,7 +373,8 @@
             <ScatterFile></ScatterFile>
             <IncludeLibs></IncludeLibs>
             <IncludeLibsPath></IncludeLibsPath>
-            <Misc>--diag_suppress 6314</Misc>
+            <Misc>--diag_suppress 6314
+</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>
@@ -384,14 +385,9 @@
           <GroupName>app</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>utils_ctboard.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\utils_ctboard.c</FilePath>
+              <FileName>sumdiff.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\app\sumdiff.s</FilePath>
             </File>
           </Files>
         </Group>

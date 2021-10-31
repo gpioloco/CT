@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\build\</OutputDirectory>
-          <OutputName>bitmanipulation</OutputName>
+          <OutputName>table</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -330,8 +330,8 @@
             <useXO>0</useXO>
             <v6Lang>0</v6Lang>
             <v6LangP>0</v6LangP>
-            <vShortEn>0</vShortEn>
-            <vShortWch>0</vShortWch>
+            <vShortEn>1</vShortEn>
+            <vShortWch>1</vShortWch>
             <v6Lto>0</v6Lto>
             <v6WtE>0</v6WtE>
             <v6Rtti>0</v6Rtti>
@@ -384,14 +384,9 @@
           <GroupName>app</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>utils_ctboard.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\utils_ctboard.c</FilePath>
+              <FileName>table.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\app\table.s</FilePath>
             </File>
           </Files>
         </Group>

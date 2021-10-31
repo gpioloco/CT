@@ -1,0 +1,411 @@
+
+
+
+ARM Macro Assembler    Page 1 
+
+
+    1 00000000         ; ------------------------------------------------------
+                       ------------
+    2 00000000         ; --  _____       ______  _____                         
+                                  -
+    3 00000000         ; -- |_   _|     |  ____|/ ____|                        
+                                  -
+    4 00000000         ; --   | |  _ __ | |__  | (___    Institute of Embedded 
+                       Systems    -
+    5 00000000         ; --   | | | '_ \|  __|  \___ \   Zurich University of  
+                                  -
+    6 00000000         ; --  _| |_| | | | |____ ____) |  Applied Sciences      
+                                  -
+    7 00000000         ; -- |_____|_| |_|______|_____/   8401 Winterthur, Switz
+                       erland     -
+    8 00000000         ; ------------------------------------------------------
+                       ------------
+    9 00000000         ; --
+   10 00000000         ; -- table.s
+   11 00000000         ; --
+   12 00000000         ; -- CT1 P04 Ein- und Ausgabe von Tabellenwerten
+   13 00000000         ; --
+   14 00000000         ; -- $Id: table.s 800 2014-10-06 13:19:25Z ruan $
+   15 00000000         ; ------------------------------------------------------
+                       ------------
+   16 00000000         ;Directives
+   17 00000000                 PRESERVE8
+   18 00000000                 THUMB
+   19 00000000         ; ------------------------------------------------------
+                       ------------
+   20 00000000         ; -- Symbolic Literals
+   21 00000000         ; ------------------------------------------------------
+                       ------------
+   22 00000000 60000200 
+                       ADDR_DIP_SWITCH_7_0
+                               EQU              0x60000200
+   23 00000000 60000201 
+                       ADDR_DIP_SWITCH_15_8
+                               EQU              0x60000201
+   24 00000000 60000203 
+                       ADDR_DIP_SWITCH_31_24
+                               EQU              0x60000203
+   25 00000000 60000100 
+                       ADDR_LED_7_0
+                               EQU              0x60000100
+   26 00000000 60000101 
+                       ADDR_LED_15_8
+                               EQU              0x60000101
+   27 00000000 60000102 
+                       ADDR_LED_23_16
+                               EQU              0x60000102
+   28 00000000 60000103 
+                       ADDR_LED_31_24
+                               EQU              0x60000103
+   29 00000000 60000210 
+                       ADDR_BUTTONS
+                               EQU              0x60000210
+   30 00000000         
+   31 00000000 00000001 
+                       BITMASK_KEY_T0
+
+
+
+ARM Macro Assembler    Page 2 
+
+
+                               EQU              0x01
+   32 00000000 0000000F 
+                       BITMASK_LOWER_NIBBLE
+                               EQU              0x0F
+   33 00000000         
+   34 00000000         ; ------------------------------------------------------
+                       ------------
+   35 00000000         ; -- Variables
+   36 00000000         ; ------------------------------------------------------
+                       ------------
+   37 00000000                 AREA             MyAsmVar, DATA, READWRITE
+   38 00000000         ; STUDENTS: To be programmed
+   39 00000000         
+   40 00000000 00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00 00 00 
+              00       store_table
+                               SPACE            16          ; reserve 16 byte (
+                                                            4 words) 
+   41 00000010         
+   42 00000010         
+   43 00000010         ; END: To be programmed
+   44 00000010                 ALIGN
+   45 00000010         
+   46 00000010         ; ------------------------------------------------------
+                       ------------
+   47 00000010         ; -- myCode
+   48 00000010         ; ------------------------------------------------------
+                       ------------
+   49 00000010                 AREA             myCode, CODE, READONLY
+   50 00000000         
+   51 00000000         main    PROC
+   52 00000000                 EXPORT           main
+   53 00000000         
+   54 00000000         readInput
+   55 00000000 F000 F816       BL               waitForKey  ; wait for key to b
+                                                            e pressed and relea
+                                                            sed
+   56 00000004         ; STUDENTS: To be programmed
+   57 00000004 4F10            LDR              R7, =BITMASK_LOWER_NIBBLE ; loa
+                                                            ding bit mask for 0
+                                                            xF
+   58 00000006         
+   59 00000006 4811            LDR              R0,=ADDR_DIP_SWITCH_7_0 ; load 
+                                                            address of switches
+                                                             0-7 into r0
+   60 00000008 7802            LDRB             R2,[R0,#0]  ; read the values o
+                                                            f the switches 0-7 
+                                                            
+   61 0000000A 4D11            LDR              R5,=ADDR_LED_7_0 ; load address
+                                                             of led 0-7
+   62 0000000C 702A            STRB             R2,[R5,#0]  ; R5 = R1
+   63 0000000E         
+   64 0000000E 4811            LDR              R0,=ADDR_DIP_SWITCH_15_8 ; load
+                                                             address of switche
+                                                            s 0-7 into r0
+   65 00000010 4E11            LDR              R6,=ADDR_LED_15_8 ; load addres
+
+
+
+ARM Macro Assembler    Page 3 
+
+
+                                                            s of led 8-15
+   66 00000012 7801            LDRB             R1,[R0,#0]  ; read the values o
+                                                            f the switches 8-15
+                                                             
+   67 00000014 4039            ANDS             R1, R1, R7
+   68 00000016 7031            STRB             R1,[R6,#0]  ; R6 = R1
+   69 00000018         
+   70 00000018         ; R5 now stores the value and R6 the index
+   71 00000018         
+   72 00000018 4B10            LDR              R3, =store_table ; load table a
+                                                            ddress
+   73 0000001A 545A            STRB             R2,[R3,R1]  ; store value in ta
+                                                            ble
+   74 0000001C         
+   75 0000001C         ; Value is now being written in the correct location in 
+                       the store_table
+   76 0000001C         ; ADDR_LED_31_24 
+   77 0000001C         
+   78 0000001C 4810            LDR              R0,=ADDR_DIP_SWITCH_31_24 ; loa
+                                                            d address of switch
+                                                            es 0-7 into r0
+   79 0000001E 7800            LDRB             R0,[R0,#0]
+   80 00000020 4038            ANDS             R0, R0, R7
+   81 00000022 4B10            LDR              R3,=ADDR_LED_31_24 ; load addre
+                                                            ss of led 8-15
+   82 00000024 7018            STRB             R0,[R3,#0]  ; R3 = R0
+   83 00000026         
+   84 00000026         ; show the value of the store_table + output index on th
+                       e upper LEDs
+   85 00000026         
+   86 00000026 4C10            LDR              R4,=ADDR_LED_23_16 ; load addre
+                                                            ss of led 8-15
+   87 00000028 490C            LDR              R1,=store_table ; load table ad
+                                                            dress
+   88 0000002A 5C08            LDRB             R0,[R1,R0]
+   89 0000002C 7020            STRB             R0,[R4,#0]  ; R3 = R0
+   90 0000002E         
+   91 0000002E         ; END: To be programmed
+   92 0000002E E7E7            B                readInput
+   93 00000030                 ALIGN
+   94 00000030         
+   95 00000030         ; ------------------------------------------------------
+                       ------------
+   96 00000030         ; Subroutines
+   97 00000030         ; ------------------------------------------------------
+                       ------------
+   98 00000030         
+   99 00000030         ; wait for key to be pressed and released
+  100 00000030         waitForKey
+  101 00000030 B407            PUSH             {R0, R1, R2}
+  102 00000032 490E            LDR              R1, =ADDR_BUTTONS ; laod base a
+                                                            ddress of keys
+  103 00000034 4A0E            LDR              R2, =BITMASK_KEY_T0 
+                                                            ; load key mask T0
+  104 00000036         
+  105 00000036         waitForPress
+  106 00000036 7808            LDRB             R0, [R1]    ; load key values
+  107 00000038 4210            TST              R0, R2      ; check, if key T0 
+                                                            is pressed
+
+
+
+ARM Macro Assembler    Page 4 
+
+
+  108 0000003A D0FC            BEQ              waitForPress
+  109 0000003C         
+  110 0000003C         waitForRelease
+  111 0000003C 7808            LDRB             R0, [R1]    ; load key values
+  112 0000003E 4210            TST              R0, R2      ; check, if key T0 
+                                                            is released
+  113 00000040 D1FC            BNE              waitForRelease
+  114 00000042         
+  115 00000042 BC07            POP              {R0, R1, R2}
+  116 00000044 4770            BX               LR
+  117 00000046 00 00           ALIGN
+  118 00000048         
+  119 00000048         ; ------------------------------------------------------
+                       ------------
+  120 00000048         ; End of code
+  121 00000048         ; ------------------------------------------------------
+                       ------------
+  122 00000048                 ENDP
+  123 00000048                 END
+              0000000F 
+              60000200 
+              60000100 
+              60000201 
+              60000101 
+              00000000 
+              60000203 
+              60000103 
+              60000102 
+              60000210 
+              00000001 
+Command Line: --debug --xref --diag_suppress=9931 --cpu=Cortex-M0 --apcs=interw
+ork --depend=.\build\table.d -o.\build\table.o -I.\RTE\_Target_1 -IC:\Users\gpi
+ol\AppData\Local\Arm\Packs\InES\CTBoard14_DFP\4.0.2\Device\Include -IC:\Users\g
+piol\AppData\Local\Arm\Packs\InES\CTBoard14_DFP\4.0.2\Device\Include\m0 -IC:\Us
+ers\gpiol\AppData\Local\Arm\Packs\InES\CTBoard14_DFP\4.0.2\HAL\Include --predef
+ine="__EVAL SETA 1" --predefine="__UVISION_VERSION SETA 536" --predefine="_RTE_
+ SETA 1" --predefine="_RTE_ SETA 1" --list=.\build\table.lst app\table.s
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+MyAsmVar 00000000
+
+Symbol: MyAsmVar
+   Definitions
+      At line 37 in file app\table.s
+   Uses
+      None
+Comment: MyAsmVar unused
+store_table 00000000
+
+Symbol: store_table
+   Definitions
+      At line 40 in file app\table.s
+   Uses
+      At line 72 in file app\table.s
+      At line 87 in file app\table.s
+
+2 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Relocatable symbols
+
+main 00000000
+
+Symbol: main
+   Definitions
+      At line 51 in file app\table.s
+   Uses
+      At line 52 in file app\table.s
+Comment: main used once
+myCode 00000000
+
+Symbol: myCode
+   Definitions
+      At line 49 in file app\table.s
+   Uses
+      None
+Comment: myCode unused
+readInput 00000000
+
+Symbol: readInput
+   Definitions
+      At line 54 in file app\table.s
+   Uses
+      At line 92 in file app\table.s
+Comment: readInput used once
+waitForKey 00000030
+
+Symbol: waitForKey
+   Definitions
+      At line 100 in file app\table.s
+   Uses
+      At line 55 in file app\table.s
+Comment: waitForKey used once
+waitForPress 00000036
+
+Symbol: waitForPress
+   Definitions
+      At line 105 in file app\table.s
+   Uses
+      At line 108 in file app\table.s
+Comment: waitForPress used once
+waitForRelease 0000003C
+
+Symbol: waitForRelease
+   Definitions
+      At line 110 in file app\table.s
+   Uses
+      At line 113 in file app\table.s
+Comment: waitForRelease used once
+6 symbols
+
+
+
+ARM Macro Assembler    Page 1 Alphabetic symbol ordering
+Absolute symbols
+
+ADDR_BUTTONS 60000210
+
+Symbol: ADDR_BUTTONS
+   Definitions
+      At line 29 in file app\table.s
+   Uses
+      At line 102 in file app\table.s
+Comment: ADDR_BUTTONS used once
+ADDR_DIP_SWITCH_15_8 60000201
+
+Symbol: ADDR_DIP_SWITCH_15_8
+   Definitions
+      At line 23 in file app\table.s
+   Uses
+      At line 64 in file app\table.s
+Comment: ADDR_DIP_SWITCH_15_8 used once
+ADDR_DIP_SWITCH_31_24 60000203
+
+Symbol: ADDR_DIP_SWITCH_31_24
+   Definitions
+      At line 24 in file app\table.s
+   Uses
+      At line 78 in file app\table.s
+Comment: ADDR_DIP_SWITCH_31_24 used once
+ADDR_DIP_SWITCH_7_0 60000200
+
+Symbol: ADDR_DIP_SWITCH_7_0
+   Definitions
+      At line 22 in file app\table.s
+   Uses
+      At line 59 in file app\table.s
+Comment: ADDR_DIP_SWITCH_7_0 used once
+ADDR_LED_15_8 60000101
+
+Symbol: ADDR_LED_15_8
+   Definitions
+      At line 26 in file app\table.s
+   Uses
+      At line 65 in file app\table.s
+Comment: ADDR_LED_15_8 used once
+ADDR_LED_23_16 60000102
+
+Symbol: ADDR_LED_23_16
+   Definitions
+      At line 27 in file app\table.s
+   Uses
+      At line 86 in file app\table.s
+Comment: ADDR_LED_23_16 used once
+ADDR_LED_31_24 60000103
+
+Symbol: ADDR_LED_31_24
+   Definitions
+      At line 28 in file app\table.s
+   Uses
+      At line 81 in file app\table.s
+Comment: ADDR_LED_31_24 used once
+ADDR_LED_7_0 60000100
+
+Symbol: ADDR_LED_7_0
+
+
+
+ARM Macro Assembler    Page 2 Alphabetic symbol ordering
+Absolute symbols
+
+   Definitions
+      At line 25 in file app\table.s
+   Uses
+      At line 61 in file app\table.s
+Comment: ADDR_LED_7_0 used once
+BITMASK_KEY_T0 00000001
+
+Symbol: BITMASK_KEY_T0
+   Definitions
+      At line 31 in file app\table.s
+   Uses
+      At line 103 in file app\table.s
+Comment: BITMASK_KEY_T0 used once
+BITMASK_LOWER_NIBBLE 0000000F
+
+Symbol: BITMASK_LOWER_NIBBLE
+   Definitions
+      At line 32 in file app\table.s
+   Uses
+      At line 57 in file app\table.s
+Comment: BITMASK_LOWER_NIBBLE used once
+10 symbols
+353 symbols in table

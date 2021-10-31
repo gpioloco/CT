@@ -1,0 +1,2982 @@
+L 1 "RTE\HAL\CT_Board_HS14_M0\hal_rcc.c"
+N/* ----------------------------------------------------------------------------
+N * --  _____       ______  _____                                              -
+N * -- |_   _|     |  ____|/ ____|                                             -
+N * --   | |  _ __ | |__  | (___    Institute of Embedded Systems              -
+N * --   | | | '_ \|  __|  \___ \   Zurich University of                       -
+N * --  _| |_| | | | |____ ____) |  Applied Sciences                           -
+N * -- |_____|_| |_|______|_____/   8401 Winterthur, Switzerland               -
+N * ------------------------------------------------------------------------- */
+N/**
+N *  \brief  Implementation of module hal_rcc.
+N *
+N *  The hardware abstraction layer for the reset and clock control unit.
+N *
+N *  $Id$
+N * ------------------------------------------------------------------------- */
+N
+N/* User includes */
+N#include "hal_rcc.h"
+L 1 "C:\Users\gpiol\AppData\Local\Arm\Packs\InES\CTBoard14_DFP\4.0.2\HAL\Include\hal_rcc.h" 1
+N/* ----------------------------------------------------------------------------
+N * --  _____       ______  _____                                              -
+N * -- |_   _|     |  ____|/ ____|                                             -
+N * --   | |  _ __ | |__  | (___    Institute of Embedded Systems              -
+N * --   | | | '_ \|  __|  \___ \   Zurich University of                       -
+N * --  _| |_| | | | |____ ____) |  Applied Sciences                           -
+N * -- |_____|_| |_|______|_____/   8401 Winterthur, Switzerland               -
+N * ------------------------------------------------------------------------- */
+N/**
+N *  \brief  Interface of module hal_rcc.
+N *
+N *  The hardware abstraction layer for the reset and clock control unit.
+N *
+N *  \file   hal_rcc.h
+N *  $Id$
+N * ------------------------------------------------------------------------- */
+N
+N/* Re-definition guard */
+N#ifndef _HAL_RCC_H
+N#define _HAL_RCC_H
+N
+N
+N/* User includes */
+N#include "hal_common.h"
+L 1 "C:\Users\gpiol\AppData\Local\Arm\Packs\InES\CTBoard14_DFP\4.0.2\HAL\Include\hal_common.h" 1
+N/* ----------------------------------------------------------------------------
+N * --  _____       ______  _____                                              -
+N * -- |_   _|     |  ____|/ ____|                                             -
+N * --   | |  _ __ | |__  | (___    Institute of Embedded Systems              -
+N * --   | | | '_ \|  __|  \___ \   Zurich University of                       -
+N * --  _| |_| | | | |____ ____) |  Applied Sciences                           -
+N * -- |_____|_| |_|______|_____/   8401 Winterthur, Switzerland               -
+N * ------------------------------------------------------------------------- */ 
+N/**
+N *  \brief  Common #defines and typedefs.
+N * 
+N *  \file   hal_common.h
+N *  $Id$
+N * ------------------------------------------------------------------------- */
+N
+N/* Re-definition guard */
+N#ifndef _HAL_COMMON_H
+N#define _HAL_COMMON_H
+N
+N/* Standard includes */
+N#include <stdint.h>
+L 1 "C:\Keil_v5\ARM\ARMCC\Bin\..\include\stdint.h" 1
+N/* Copyright (C) ARM Ltd., 1999,2014 */
+N/* All rights reserved */
+N
+N/*
+N * RCS $Revision$
+N * Checkin $Date$
+N * Revising $Author: agrant $
+N */
+N
+N#ifndef __stdint_h
+N#define __stdint_h
+N#define __ARMCLIB_VERSION 5060044
+N
+N  #ifdef __INT64_TYPE__
+S    /* armclang predefines '__INT64_TYPE__' and '__INT64_C_SUFFIX__' */
+S    #define __INT64 __INT64_TYPE__
+N  #else
+N    /* armcc has builtin '__int64' which can be used in --strict mode */
+N    #define __INT64 __int64
+N    #define __INT64_C_SUFFIX__ ll
+N  #endif
+N  #define __PASTE2(x, y) x ## y
+N  #define __PASTE(x, y) __PASTE2(x, y)
+N  #define __INT64_C(x)  __ESCAPE__(__PASTE(x, __INT64_C_SUFFIX__))
+N  #define __UINT64_C(x)  __ESCAPE__(__PASTE(x ## u, __INT64_C_SUFFIX__))
+N  #if defined(__clang__) || (defined(__ARMCC_VERSION) && !defined(__STRICT_ANSI__))
+X  #if 0L || (1L && !0L)
+N    /* armclang and non-strict armcc allow 'long long' in system headers */
+N    #define __LONGLONG long long
+N  #else
+S    /* strict armcc has '__int64' */
+S    #define __LONGLONG __int64
+N  #endif
+N
+N  #ifndef __STDINT_DECLS
+N  #define __STDINT_DECLS
+N
+N    #undef __CLIBNS
+N
+N    #ifdef __cplusplus
+S      namespace std {
+S          #define __CLIBNS std::
+S          extern "C" {
+N    #else
+N      #define __CLIBNS
+N    #endif  /* __cplusplus */
+N
+N
+N/*
+N * 'signed' is redundant below, except for 'signed char' and if
+N * the typedef is used to declare a bitfield.
+N */
+N
+N    /* 7.18.1.1 */
+N
+N    /* exact-width signed integer types */
+Ntypedef   signed          char int8_t;
+Ntypedef   signed short     int int16_t;
+Ntypedef   signed           int int32_t;
+Ntypedef   signed       __INT64 int64_t;
+Xtypedef   signed       __int64 int64_t;
+N
+N    /* exact-width unsigned integer types */
+Ntypedef unsigned          char uint8_t;
+Ntypedef unsigned short     int uint16_t;
+Ntypedef unsigned           int uint32_t;
+Ntypedef unsigned       __INT64 uint64_t;
+Xtypedef unsigned       __int64 uint64_t;
+N
+N    /* 7.18.1.2 */
+N
+N    /* smallest type of at least n bits */
+N    /* minimum-width signed integer types */
+Ntypedef   signed          char int_least8_t;
+Ntypedef   signed short     int int_least16_t;
+Ntypedef   signed           int int_least32_t;
+Ntypedef   signed       __INT64 int_least64_t;
+Xtypedef   signed       __int64 int_least64_t;
+N
+N    /* minimum-width unsigned integer types */
+Ntypedef unsigned          char uint_least8_t;
+Ntypedef unsigned short     int uint_least16_t;
+Ntypedef unsigned           int uint_least32_t;
+Ntypedef unsigned       __INT64 uint_least64_t;
+Xtypedef unsigned       __int64 uint_least64_t;
+N
+N    /* 7.18.1.3 */
+N
+N    /* fastest minimum-width signed integer types */
+Ntypedef   signed           int int_fast8_t;
+Ntypedef   signed           int int_fast16_t;
+Ntypedef   signed           int int_fast32_t;
+Ntypedef   signed       __INT64 int_fast64_t;
+Xtypedef   signed       __int64 int_fast64_t;
+N
+N    /* fastest minimum-width unsigned integer types */
+Ntypedef unsigned           int uint_fast8_t;
+Ntypedef unsigned           int uint_fast16_t;
+Ntypedef unsigned           int uint_fast32_t;
+Ntypedef unsigned       __INT64 uint_fast64_t;
+Xtypedef unsigned       __int64 uint_fast64_t;
+N
+N    /* 7.18.1.4 integer types capable of holding object pointers */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+Stypedef   signed       __INT64 intptr_t;
+Stypedef unsigned       __INT64 uintptr_t;
+N#else
+Ntypedef   signed           int intptr_t;
+Ntypedef unsigned           int uintptr_t;
+N#endif
+N
+N    /* 7.18.1.5 greatest-width integer types */
+Ntypedef   signed     __LONGLONG intmax_t;
+Xtypedef   signed     long long intmax_t;
+Ntypedef unsigned     __LONGLONG uintmax_t;
+Xtypedef unsigned     long long uintmax_t;
+N
+N
+N#if !defined(__cplusplus) || defined(__STDC_LIMIT_MACROS)
+X#if !0L || 0L
+N
+N    /* 7.18.2.1 */
+N
+N    /* minimum values of exact-width signed integer types */
+N#define INT8_MIN                   -128
+N#define INT16_MIN                -32768
+N#define INT32_MIN          (~0x7fffffff)   /* -2147483648 is unsigned */
+N#define INT64_MIN  __INT64_C(~0x7fffffffffffffff) /* -9223372036854775808 is unsigned */
+N
+N    /* maximum values of exact-width signed integer types */
+N#define INT8_MAX                    127
+N#define INT16_MAX                 32767
+N#define INT32_MAX            2147483647
+N#define INT64_MAX  __INT64_C(9223372036854775807)
+N
+N    /* maximum values of exact-width unsigned integer types */
+N#define UINT8_MAX                   255
+N#define UINT16_MAX                65535
+N#define UINT32_MAX           4294967295u
+N#define UINT64_MAX __UINT64_C(18446744073709551615)
+N
+N    /* 7.18.2.2 */
+N
+N    /* minimum values of minimum-width signed integer types */
+N#define INT_LEAST8_MIN                   -128
+N#define INT_LEAST16_MIN                -32768
+N#define INT_LEAST32_MIN          (~0x7fffffff)
+N#define INT_LEAST64_MIN  __INT64_C(~0x7fffffffffffffff)
+N
+N    /* maximum values of minimum-width signed integer types */
+N#define INT_LEAST8_MAX                    127
+N#define INT_LEAST16_MAX                 32767
+N#define INT_LEAST32_MAX            2147483647
+N#define INT_LEAST64_MAX  __INT64_C(9223372036854775807)
+N
+N    /* maximum values of minimum-width unsigned integer types */
+N#define UINT_LEAST8_MAX                   255
+N#define UINT_LEAST16_MAX                65535
+N#define UINT_LEAST32_MAX           4294967295u
+N#define UINT_LEAST64_MAX __UINT64_C(18446744073709551615)
+N
+N    /* 7.18.2.3 */
+N
+N    /* minimum values of fastest minimum-width signed integer types */
+N#define INT_FAST8_MIN           (~0x7fffffff)
+N#define INT_FAST16_MIN          (~0x7fffffff)
+N#define INT_FAST32_MIN          (~0x7fffffff)
+N#define INT_FAST64_MIN  __INT64_C(~0x7fffffffffffffff)
+N
+N    /* maximum values of fastest minimum-width signed integer types */
+N#define INT_FAST8_MAX             2147483647
+N#define INT_FAST16_MAX            2147483647
+N#define INT_FAST32_MAX            2147483647
+N#define INT_FAST64_MAX  __INT64_C(9223372036854775807)
+N
+N    /* maximum values of fastest minimum-width unsigned integer types */
+N#define UINT_FAST8_MAX            4294967295u
+N#define UINT_FAST16_MAX           4294967295u
+N#define UINT_FAST32_MAX           4294967295u
+N#define UINT_FAST64_MAX __UINT64_C(18446744073709551615)
+N
+N    /* 7.18.2.4 */
+N
+N    /* minimum value of pointer-holding signed integer type */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define INTPTR_MIN INT64_MIN
+N#else
+N#define INTPTR_MIN INT32_MIN
+N#endif
+N
+N    /* maximum value of pointer-holding signed integer type */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define INTPTR_MAX INT64_MAX
+N#else
+N#define INTPTR_MAX INT32_MAX
+N#endif
+N
+N    /* maximum value of pointer-holding unsigned integer type */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define UINTPTR_MAX UINT64_MAX
+N#else
+N#define UINTPTR_MAX UINT32_MAX
+N#endif
+N
+N    /* 7.18.2.5 */
+N
+N    /* minimum value of greatest-width signed integer type */
+N#define INTMAX_MIN  __ESCAPE__(~0x7fffffffffffffffll)
+N
+N    /* maximum value of greatest-width signed integer type */
+N#define INTMAX_MAX  __ESCAPE__(9223372036854775807ll)
+N
+N    /* maximum value of greatest-width unsigned integer type */
+N#define UINTMAX_MAX __ESCAPE__(18446744073709551615ull)
+N
+N    /* 7.18.3 */
+N
+N    /* limits of ptrdiff_t */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define PTRDIFF_MIN INT64_MIN
+S#define PTRDIFF_MAX INT64_MAX
+N#else
+N#define PTRDIFF_MIN INT32_MIN
+N#define PTRDIFF_MAX INT32_MAX
+N#endif
+N
+N    /* limits of sig_atomic_t */
+N#define SIG_ATOMIC_MIN (~0x7fffffff)
+N#define SIG_ATOMIC_MAX   2147483647
+N
+N    /* limit of size_t */
+N#if __sizeof_ptr == 8
+X#if 4 == 8
+S#define SIZE_MAX UINT64_MAX
+N#else
+N#define SIZE_MAX UINT32_MAX
+N#endif
+N
+N    /* limits of wchar_t */
+N    /* NB we have to undef and redef because they're defined in both
+N     * stdint.h and wchar.h */
+N#undef WCHAR_MIN
+N#undef WCHAR_MAX
+N
+N#if defined(__WCHAR32) || (defined(__ARM_SIZEOF_WCHAR_T) && __ARM_SIZEOF_WCHAR_T == 4)
+X#if 0L || (0L && __ARM_SIZEOF_WCHAR_T == 4)
+S  #define WCHAR_MIN   0
+S  #define WCHAR_MAX   0xffffffffU
+N#else
+N  #define WCHAR_MIN   0
+N  #define WCHAR_MAX   65535
+N#endif
+N
+N    /* limits of wint_t */
+N#define WINT_MIN (~0x7fffffff)
+N#define WINT_MAX 2147483647
+N
+N#endif /* __STDC_LIMIT_MACROS */
+N
+N#if !defined(__cplusplus) || defined(__STDC_CONSTANT_MACROS)
+X#if !0L || 0L
+N
+N    /* 7.18.4.1 macros for minimum-width integer constants */
+N#define INT8_C(x)   (x)
+N#define INT16_C(x)  (x)
+N#define INT32_C(x)  (x)
+N#define INT64_C(x)  __INT64_C(x)
+N
+N#define UINT8_C(x)  (x ## u)
+N#define UINT16_C(x) (x ## u)
+N#define UINT32_C(x) (x ## u)
+N#define UINT64_C(x) __UINT64_C(x)
+N
+N    /* 7.18.4.2 macros for greatest-width integer constants */
+N#define INTMAX_C(x)  __ESCAPE__(x ## ll)
+N#define UINTMAX_C(x) __ESCAPE__(x ## ull)
+N
+N#endif /* __STDC_CONSTANT_MACROS */
+N
+N    #ifdef __cplusplus
+S         }  /* extern "C" */
+S      }  /* namespace std */
+N    #endif /* __cplusplus */
+N  #endif /* __STDINT_DECLS */
+N
+N  #ifdef __cplusplus
+S    #ifndef __STDINT_NO_EXPORTS
+S      using ::std::int8_t;
+S      using ::std::int16_t;
+S      using ::std::int32_t;
+S      using ::std::int64_t;
+S      using ::std::uint8_t;
+S      using ::std::uint16_t;
+S      using ::std::uint32_t;
+S      using ::std::uint64_t;
+S      using ::std::int_least8_t;
+S      using ::std::int_least16_t;
+S      using ::std::int_least32_t;
+S      using ::std::int_least64_t;
+S      using ::std::uint_least8_t;
+S      using ::std::uint_least16_t;
+S      using ::std::uint_least32_t;
+S      using ::std::uint_least64_t;
+S      using ::std::int_fast8_t;
+S      using ::std::int_fast16_t;
+S      using ::std::int_fast32_t;
+S      using ::std::int_fast64_t;
+S      using ::std::uint_fast8_t;
+S      using ::std::uint_fast16_t;
+S      using ::std::uint_fast32_t;
+S      using ::std::uint_fast64_t;
+S      using ::std::intptr_t;
+S      using ::std::uintptr_t;
+S      using ::std::intmax_t;
+S      using ::std::uintmax_t;
+S    #endif
+N  #endif /* __cplusplus */
+N
+N#undef __INT64
+N#undef __LONGLONG
+N
+N#endif /* __stdint_h */
+N
+N/* end of stdint.h */
+L 22 "C:\Users\gpiol\AppData\Local\Arm\Packs\InES\CTBoard14_DFP\4.0.2\HAL\Include\hal_common.h" 2
+N
+N
+N/* -- Type definitions
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \enum   hal_bool_t
+N *  \brief  Often used TRUE / FALSE type.
+N */
+Ntypedef enum {
+N    FALSE = 0u,             /**< FALSE. */
+N    TRUE = !FALSE,          /**< TRUE, aka. not FALSE. */
+N    /* Derived */
+N    DISABLE = FALSE,        /**< Typically used as command -> DISABLE. */
+N    ENABLE = TRUE,          /**< Typically used as command -> ENABLE. */
+N    DISABLED = FALSE,       /**< Typically used as status -> DISABLED. */
+N    ENABLED = TRUE          /**< Typically used as status -> ENABLED. */
+N} hal_bool_t;
+N
+N
+N/**
+N *  \enum   hal_data_width_t
+N *  \brief  Defines standard data width.
+N */
+Ntypedef enum {
+N    BYTE = 8u,          /**< Byte. */
+N    HWORD = 16u,        /**< Halfword. */
+N    WORD = 32u,         /**< Word. */
+N    DWORD = 64u         /**< Doubleword. */
+N} hal_data_width_t;
+N
+N
+N/**
+N *  \enum   hal_peripheral_t
+N *  \brief  Defines a peripheral.
+N */
+Ntypedef enum {
+N    PER_ADC1,       // APB2
+N    PER_ADC2,
+N    PER_ADC3,
+N    
+N    PER_DAC,        // APB1
+N    
+N    PER_DMA1,       // AHB1
+N    PER_DMA2,
+N    
+N    PER_FMC,        // AHB3
+N    
+N    PER_GPIOA,      // AHB1
+N    PER_GPIOB,
+N    PER_GPIOC,
+N    PER_GPIOD,
+N    PER_GPIOE,
+N    PER_GPIOF,
+N    PER_GPIOG,
+N    PER_GPIOH,
+N    PER_GPIOI,
+N    PER_GPIOJ,
+N    PER_GPIOK,
+N    
+N    PER_PWR,        // APB1
+N    
+N    PER_TIM2,       // APB1
+N    PER_TIM3,
+N    PER_TIM4,
+N    PER_TIM5
+N} hal_peripheral_t;
+N
+N
+N#endif
+L 25 "C:\Users\gpiol\AppData\Local\Arm\Packs\InES\CTBoard14_DFP\4.0.2\HAL\Include\hal_rcc.h" 2
+N
+N
+N/* -- Type definitions
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \enum   hal_rcc_osc_t
+N *  \brief  Defines the different oscillators of the SoC.
+N */
+Ntypedef enum {
+N    HAL_RCC_OSC_HSI = 0u,
+N    HAL_RCC_OSC_HSE = 16u,
+N    HAL_RCC_OSC_PLL = 24u,
+N    HAL_RCC_OSC_PLLI2S = 26u,
+N    HAL_RCC_OSC_PLLSAI = 28u
+N} hal_rcc_osc_t;
+N
+N
+N/**
+N *  \enum   hal_rcc_hpre_t
+N *  \brief  Defines available divider for the advanced high-performance bus.
+N */
+Ntypedef enum {
+N    HAL_RCC_HPRE_1 = 0u,
+N    HAL_RCC_HPRE_2 = 8u,
+N    HAL_RCC_HPRE_4 = 9u,
+N    HAL_RCC_HPRE_8 = 10u,
+N    HAL_RCC_HPRE_16 = 11u,
+N    HAL_RCC_HPRE_64 = 12u,
+N    HAL_RCC_HPRE_128 = 13u,
+N    HAL_RCC_HPRE_256 = 14u,
+N    HAL_RCC_HPRE_512 = 15u
+N} hal_rcc_hpre_t;
+N
+N
+N/**
+N *  \enum   hal_rcc_ppre_t
+N *  \brief  Defines available divider for the advanced peripheral buses.
+N */
+Ntypedef enum {
+N    HAL_RCC_PPRE_2 = 4u,
+N    HAL_RCC_PPRE_4 = 5u,
+N    HAL_RCC_PPRE_8 = 6u,
+N    HAL_RCC_PPRE_16 = 7u
+N} hal_rcc_ppre_t;
+N
+N
+N/**
+N *  \struct hal_rcc_pll_init_t
+N *  \brief  Initialization structure for pll configuration.
+N */
+Ntypedef struct {
+N    hal_rcc_osc_t source;
+N    uint16_t n_factor;
+N    uint8_t p_divider;
+N    uint8_t q_divider;
+N    uint8_t r_divider;
+N    /* Only for main pll */
+N    uint8_t m_divider;
+N} hal_rcc_pll_init_t;
+N
+N
+N/**
+N *  \struct hal_rcc_clk_init_t
+N *  \brief  Initialization structure for system clock configuration.
+N */
+Ntypedef struct {
+N    hal_rcc_osc_t osc;
+N    hal_rcc_hpre_t hpre;
+N    hal_rcc_ppre_t ppre1;
+N    hal_rcc_ppre_t ppre2;
+N} hal_rcc_clk_init_t;
+N
+N
+N/* -- Public function declarations
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \brief  Resets all involved registers.
+N */
+Nvoid hal_rcc_reset(void);
+N
+N/**
+N *  \brief  Enables/Disables the defined periphery. 
+N *  \param  peripheral : Defines the peripheral to ENABLE/DISABLE.
+N *  \param  status : ENABLE/DISABLE the peripheral clock.
+N */
+Nvoid hal_rcc_set_peripheral(hal_peripheral_t peripheral, hal_bool_t status)
+N__attribute__((deprecated("Please use XXX_ENABLE() or XXX_DISABLE().")));
+N
+N/**
+N *  \brief  Enables the defined clock source. 
+N *  If a pll is choosen, make sure the configured source clock
+N *  is up and running.
+N *  \param  osc : Defines the oscillator to ENABLE/DISABLE.
+N *  \param  status : ENABLE/DISABLE the oscillator.
+N *  \return If successful ENABLED, else DISABLED.
+N */
+Nhal_bool_t hal_rcc_set_osc(hal_rcc_osc_t osc, hal_bool_t status);
+N
+N/**
+N *  \brief  Configures the different pll settings.
+N *  Don't forget to enable the pll after configuration.
+N *  \param  pll : Defines the pll to setup.
+N *  \param  init : Initialisation structure for pll.
+N */
+Nvoid hal_rcc_setup_pll(hal_rcc_osc_t pll, hal_rcc_pll_init_t init);
+N
+N/**
+N *  \brief  Configure the system clocks.
+N *  \param  init : Initialisation structure for the system clock.
+N */
+Nvoid hal_rcc_setup_clock(hal_rcc_clk_init_t init);
+N
+N
+N#endif
+L 19 "RTE\HAL\CT_Board_HS14_M0\hal_rcc.c" 2
+N#include "reg_stm32f4xx.h"
+L 1 "C:\Users\gpiol\AppData\Local\Arm\Packs\InES\CTBoard14_DFP\4.0.2\Device\Include\reg_stm32f4xx.h" 1
+N/* ----------------------------------------------------------------------------
+N * --  _____       ______  _____                                              -
+N * -- |_   _|     |  ____|/ ____|                                             -
+N * --   | |  _ __ | |__  | (___    Institute of Embedded Systems              -
+N * --   | | | '_ \|  __|  \___ \   Zurich University of                       -
+N * --  _| |_| | | | |____ ____) |  Applied Sciences                           -
+N * -- |_____|_| |_|______|_____/   8401 Winterthur, Switzerland               -
+N * ------------------------------------------------------------------------- */
+N/**
+N *  \brief  Registries for STM32F4xx.
+N * 
+N *  \file   reg_stm32f4xx.h
+N *  $Id$
+N * ------------------------------------------------------------------------- */
+N#ifndef _REG_STM32F4xx_H
+N#define _REG_STM32F4xx_H
+N
+N#include <stdint.h>
+N
+N
+N/*  Utilities
+N * ------------------------------------------------------------------------- */
+N 
+N/* Set and clear bit in register. */
+N#define REG_SET(REG, BIT)       ( (REG) |= (BIT) )
+N#define REG_CLR(REG, BIT)       ( (REG) &= ~(BIT) )
+N
+N/* Toggle (set, then clear) bit in register */
+N#define REG_TGL(REG, BIT)       do {                        \
+N                                    REG_SET((REG), (BIT));  \
+N                                    REG_CLR((REG), (BIT));  \
+N                                } while(0)
+X#define REG_TGL(REG, BIT)       do {                                                            REG_SET((REG), (BIT));                                      REG_CLR((REG), (BIT));                                  } while(0)
+N
+N
+N/*  RCC - register clock control
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_rcc_t
+N *  \brief  Representation of RCC register.
+N *
+N *  Described in reference manual p.147ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;           /**< Clock control register. */
+N    volatile uint32_t PLLCFGR;      /**< PLL configuration register. */
+N    volatile uint32_t CFGR;         /**< Clock configuration register. */
+N    volatile uint32_t CIR;          /**< Clock interrupt register. */
+N    volatile uint32_t AHB1RSTR;     /**< AHB1 peripheral reset register. */
+N    volatile uint32_t AHB2RSTR;     /**< AHB2 peripheral reset register. */
+N    volatile uint32_t AHB3RSTR;     /**< AHB3 peripheral reset register. */
+N    uint32_t RESERVED;
+N    volatile uint32_t APB1RSTR;     /**< APB1 peripheral reset register. */
+N    volatile uint32_t APB2RSTR;     /**< APB2 peripheral reset register. */
+N    uint32_t RESERVED1[2];
+N    volatile uint32_t AHB1ENR;      /**< AHB1 peripheral clock enable register. */
+N    volatile uint32_t AHB2ENR;      /**< AHB2 peripheral clock enable register. */
+N    volatile uint32_t AHB3ENR;      /**< AHB3 peripheral clock enable register. */
+N    uint32_t RESERVED2;
+N    volatile uint32_t APB1ENR;      /**< APB1 peripheral clock enable register. */
+N    volatile uint32_t APB2ENR;      /**< APB2 peripheral clock enable register. */
+N    uint32_t RESERVED3[2];
+N    volatile uint32_t AHB1LPENR;    /**< AHB1 peripheral clock enable in lp register. */
+N    volatile uint32_t AHB2LPENR;    /**< AHB2 peripheral clock enable in lp register. */
+N    volatile uint32_t AHB3LPENR;    /**< AHB3 peripheral clock enable in lp register. */
+N    uint32_t RESERVED4;
+N    volatile uint32_t APB1LPENR;    /**< APB1 peripheral clock enable in lp register. */
+N    volatile uint32_t APB2LPENR;    /**< APB2 peripheral clock enable in lp register. */
+N    uint32_t RESERVED5[2];
+N    volatile uint32_t BDCR;         /**< Backup domain control register. */
+N    volatile uint32_t CSR;          /**< Clock controll and status register. */
+N    uint32_t RESERVED6[2];
+N    volatile uint32_t SSCGR;        /**< Spreadspectrum clock gen. register. */
+N    volatile uint32_t PLLI2SCFGR;   /**< PLLI2S configuration register. */
+N    volatile uint32_t PLLSAICFGR;   /**< PLLSAI configuration register. */
+N    volatile uint32_t DCKCFGR;      /**< Dedicated clock conf. register. */
+N} reg_rcc_t;
+N
+N
+N#ifdef TESTING
+S    extern reg_rcc_t rcc_testing;
+S    #define RCC                     ( (reg_rcc_t *) &rcc_testing )
+N#else
+N    #define RCC                     ( (reg_rcc_t *) 0x40023800 )
+N#endif
+N
+N
+N/*  FLASH - flash interface register
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_flash_t
+N *  \brief  Representation of FLASH register.
+N *
+N *  Described in reference manual p.73ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t ACR;      /**< Access control register. */
+N    volatile uint32_t KEYR;     /**< Key register. */
+N    volatile uint32_t OPTKEYR;  /**< Option key register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t OPTCR;    /**< Option control register. */
+N    volatile uint32_t OPTCR1;   /**< Option1 control register. */
+N} reg_flash_t;
+N
+N
+N#ifdef TESTING
+S    extern reg_flash_t flash_testing;
+S    #define FLASH                   ( (reg_flash_t *) &flash_testing )
+N#else
+N    #define FLASH                   ( (reg_flash_t *) 0x40023c00 )
+N#endif
+N
+N/*  CRC - checksum calculation unit
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_crc_t
+N *  \brief  Representation of CRC register.
+N *
+N *  Described in reference manual p.112ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t DR;       /**< Data register. */
+N    volatile uint32_t IDR;      /**< Independent data register. */
+N    volatile uint32_t CR;       /**< Control register. */
+N} reg_crc_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_crc_t crc_testing;
+S    #define CRC                   ( (reg_crc_t *) &crc_testing )
+N#else
+N    #define CRC                   ( (reg_crc_t *) 0x40023000 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define CRC_RCC_PATTERN         ( 0x1 << 12u )
+N#define CRC_RESET()             REG_TGL(RCC->AHB1RSTR,  CRC_RCC_PATTERN)
+N#define CRC_ENABLE()            REG_SET(RCC->AHB1ENR,   CRC_RCC_PATTERN)
+N#define CRC_DISABLE()           REG_CLR(RCC->AHB1ENR,   CRC_RCC_PATTERN)
+N#define CRC_LP_ENABLE()         REG_SET(RCC->AHB1LPENR, CRC_RCC_PATTERN)
+N#define CRC_LP_DISABLE()        REG_CLR(RCC->AHB1LPENR, CRC_RCC_PATTERN)
+N
+N
+N/*  PWR - power controller
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_pwr_t
+N *  \brief  Representation of PWR register.
+N *
+N *  Described in reference manual p.115ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t CSR;      /**< Control/status register. */
+N} reg_pwr_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_pwr_t pwr_testing;
+S    #define PWR                     ( (reg_pwr_t *) &pwr_testing )
+N#else
+N    #define PWR                     ( (reg_pwr_t *) 0x40007000 )
+N#endif
+N
+N/* Helper macros */
+N
+N#define PWR_RCC_PATTERN         ( 0x1 << 28u )
+N#define PWR_RESET()             REG_TGL(RCC->APB1RSTR,  PWR_RCC_PATTERN)
+N#define PWR_ENABLE()            REG_SET(RCC->APB1ENR,   PWR_RCC_PATTERN)
+N#define PWR_DISABLE()           REG_CLR(RCC->APB1ENR,   PWR_RCC_PATTERN)
+N#define PWR_LP_ENABLE()         REG_SET(RCC->APB1LPENR, PWR_RCC_PATTERN)
+N#define PWR_LP_DISABLE()        REG_CLR(RCC->APB1LPENR, PWR_RCC_PATTERN)
+N
+N
+N/*  GPIO - general purpose input / output
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_gpio_t
+N *  \brief  Representation of GPIO register.
+N *
+N *  Described in reference manual p.265ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t MODER;    /**< Port mode register. */
+N    volatile uint32_t OTYPER;   /**< Output type register. */
+N    volatile uint32_t OSPEEDR;  /**< Output speed register. */
+N    volatile uint32_t PUPDR;    /**< Port pull-up/pull-down register. */
+N    volatile uint32_t IDR;      /**< Input data register. */
+N    volatile uint32_t ODR;      /**< output data register. */
+N    volatile uint32_t BSRR;     /**< Bit set/reset register */
+N    volatile uint32_t LCKR;     /**< Port lock register. */
+N    volatile uint32_t AFRL;     /**< AF low register pin 0..7. */
+N    volatile uint32_t AFRH;     /**< AF high register pin 8..15. */                                
+N} reg_gpio_t;
+N
+N
+N/* Register macros */
+N
+N
+N#ifdef TESTING
+S    extern reg_gpio_t gpioa_testing;
+S    extern reg_gpio_t gpiob_testing;
+S    extern reg_gpio_t gpioc_testing;
+S    extern reg_gpio_t gpiod_testing;
+S    extern reg_gpio_t gpioe_testing;
+S    extern reg_gpio_t gpiof_testing;
+S    extern reg_gpio_t gpiog_testing;
+S    extern reg_gpio_t gpioh_testing;
+S    extern reg_gpio_t gpioi_testing;
+S    extern reg_gpio_t gpioj_testing;
+S    extern reg_gpio_t gpiok_testing;
+S    #define GPIOA                   ( (reg_gpio_t *) &gpioa_testing )
+S    #define GPIOB                   ( (reg_gpio_t *) &gpiob_testing )
+S    #define GPIOC                   ( (reg_gpio_t *) &gpioc_testing )
+S    #define GPIOD                   ( (reg_gpio_t *) &gpiod_testing )
+S    #define GPIOE                   ( (reg_gpio_t *) &gpioe_testing )
+S    #define GPIOF                   ( (reg_gpio_t *) &gpiof_testing )
+S    #define GPIOG                   ( (reg_gpio_t *) &gpiog_testing )
+S    #define GPIOH                   ( (reg_gpio_t *) &gpioh_testing )
+S    #define GPIOI                   ( (reg_gpio_t *) &gpioi_testing )
+S    #define GPIOJ                   ( (reg_gpio_t *) &gpioj_testing )
+S    #define GPIOK                   ( (reg_gpio_t *) &gpiok_testing )
+N#else
+N    #define GPIOA                   ( (reg_gpio_t *) 0x40020000 )
+N    #define GPIOB                   ( (reg_gpio_t *) 0x40020400 )
+N    #define GPIOC                   ( (reg_gpio_t *) 0x40020800 )
+N    #define GPIOD                   ( (reg_gpio_t *) 0x40020c00 )
+N    #define GPIOE                   ( (reg_gpio_t *) 0x40021000 )
+N    #define GPIOF                   ( (reg_gpio_t *) 0x40021400 )
+N    #define GPIOG                   ( (reg_gpio_t *) 0x40021800 )
+N    #define GPIOH                   ( (reg_gpio_t *) 0x40021c00 )
+N    #define GPIOI                   ( (reg_gpio_t *) 0x40022000 )
+N    #define GPIOJ                   ( (reg_gpio_t *) 0x40022400 )
+N    #define GPIOK                   ( (reg_gpio_t *) 0x40022800 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define GPIOA_RCC_PATTERN       ( 0x1 << 0u )
+N#define GPIOA_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOA_RCC_PATTERN)
+N#define GPIOA_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOA_RCC_PATTERN)
+N#define GPIOA_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOA_RCC_PATTERN)
+N#define GPIOA_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOA_RCC_PATTERN)
+N#define GPIOA_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOA_RCC_PATTERN)
+N
+N#define GPIOB_RCC_PATTERN       ( 0x1 << 1u )
+N#define GPIOB_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOB_RCC_PATTERN)
+N#define GPIOB_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOB_RCC_PATTERN)
+N#define GPIOB_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOB_RCC_PATTERN)
+N#define GPIOB_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOB_RCC_PATTERN)
+N#define GPIOB_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOB_RCC_PATTERN)
+N
+N#define GPIOC_RCC_PATTERN       ( 0x1 << 2u )
+N#define GPIOC_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOC_RCC_PATTERN)
+N#define GPIOC_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOC_RCC_PATTERN)
+N#define GPIOC_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOC_RCC_PATTERN)
+N#define GPIOC_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOC_RCC_PATTERN)
+N#define GPIOC_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOC_RCC_PATTERN)
+N
+N#define GPIOD_RCC_PATTERN       ( 0x1 << 3u )
+N#define GPIOD_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOD_RCC_PATTERN)
+N#define GPIOD_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOD_RCC_PATTERN)
+N#define GPIOD_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOD_RCC_PATTERN)
+N#define GPIOD_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOD_RCC_PATTERN)
+N#define GPIOD_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOD_RCC_PATTERN)
+N
+N#define GPIOE_RCC_PATTERN       ( 0x1 << 4u )
+N#define GPIOE_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOE_RCC_PATTERN)
+N#define GPIOE_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOE_RCC_PATTERN)
+N#define GPIOE_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOE_RCC_PATTERN)
+N#define GPIOE_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOE_RCC_PATTERN)
+N#define GPIOE_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOE_RCC_PATTERN)
+N
+N#define GPIOF_RCC_PATTERN       ( 0x1 << 5u )
+N#define GPIOF_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOF_RCC_PATTERN)
+N#define GPIOF_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOF_RCC_PATTERN)
+N#define GPIOF_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOF_RCC_PATTERN)
+N#define GPIOF_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOF_RCC_PATTERN)
+N#define GPIOF_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOF_RCC_PATTERN)
+N
+N#define GPIOG_RCC_PATTERN       ( 0x1 << 6u )
+N#define GPIOG_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOG_RCC_PATTERN)
+N#define GPIOG_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOG_RCC_PATTERN)
+N#define GPIOG_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOG_RCC_PATTERN)
+N#define GPIOG_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOG_RCC_PATTERN)
+N#define GPIOG_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOG_RCC_PATTERN)
+N
+N#define GPIOH_RCC_PATTERN       ( 0x1 << 7u )
+N#define GPIOH_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOH_RCC_PATTERN)
+N#define GPIOH_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOH_RCC_PATTERN)
+N#define GPIOH_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOH_RCC_PATTERN)
+N#define GPIOH_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOH_RCC_PATTERN)
+N#define GPIOH_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOH_RCC_PATTERN)
+N
+N#define GPIOI_RCC_PATTERN       ( 0x1 << 8u )
+N#define GPIOI_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOI_RCC_PATTERN)
+N#define GPIOI_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOI_RCC_PATTERN)
+N#define GPIOI_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOI_RCC_PATTERN)
+N#define GPIOI_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOI_RCC_PATTERN)
+N#define GPIOI_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOI_RCC_PATTERN)
+N
+N#define GPIOJ_RCC_PATTERN       ( 0x1 << 9u )
+N#define GPIOJ_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOJ_RCC_PATTERN)
+N#define GPIOJ_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOJ_RCC_PATTERN)
+N#define GPIOJ_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOJ_RCC_PATTERN)
+N#define GPIOJ_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOJ_RCC_PATTERN)
+N#define GPIOJ_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOJ_RCC_PATTERN)
+N
+N#define GPIOK_RCC_PATTERN       ( 0x1 << 10u )
+N#define GPIOK_RESET()           REG_TGL(RCC->AHB1RSTR,  GPIOK_RCC_PATTERN)
+N#define GPIOK_ENABLE()          REG_SET(RCC->AHB1ENR,   GPIOK_RCC_PATTERN)
+N#define GPIOK_DISABLE()         REG_CLR(RCC->AHB1ENR,   GPIOK_RCC_PATTERN)
+N#define GPIOK_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, GPIOK_RCC_PATTERN)
+N#define GPIOK_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, GPIOK_RCC_PATTERN)
+N
+N
+N/*  SYSCFG - system configuration controller
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_syscfg_t
+N *  \brief  Representation of SYSCFG register.
+N *
+N *  Described in reference manual p.286ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t MEMRMP;       /**< Memory remap register. */
+N    volatile uint32_t PMC;          /**< Peripheral mode register. */
+N    volatile uint32_t EXTICR1;      /**< External interrupt conf. register 1. */
+N    volatile uint32_t EXTICR2;      /**< External interrupt conf. register 2. */
+N    volatile uint32_t EXTICR3;      /**< External interrupt conf. register 3. */
+N    volatile uint32_t EXTICR4;      /**< External interrupt conf. register 4. */
+N    uint32_t RESERVED[2];
+N    volatile uint32_t CMPCR;        /**< Compensation cell control register. */
+N} reg_syscfg_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_syscfg_t syscfg_testing;
+S    #define SYSCFG                  ( (reg_syscfg_t *) &syscfg_testing )
+N#else
+N    #define SYSCFG                  ( (reg_syscfg_t *) 0x40013800 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define SYSCFG_RCC_PATTERN      ( 0x1 << 14u )
+N#define SYSCFG_RESET()          REG_TGL(RCC->APB2RSTR,  SYSCFG_RCC_PATTERN)
+N#define SYSCFG_ENABLE()         REG_SET(RCC->APB2ENR,   SYSCFG_RCC_PATTERN)
+N#define SYSCFG_DISABLE()        REG_CLR(RCC->APB2ENR,   SYSCFG_RCC_PATTERN)
+N#define SYSCFG_LP_ENABLE()      REG_SET(RCC->APB2LPENR, SYSCFG_RCC_PATTERN)
+N#define SYSCFG_LP_DISABLE()     REG_CLR(RCC->APB2LPENR, SYSCFG_RCC_PATTERN)
+N
+N
+N/*  DMA - direct memory access
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_dma_stream_t
+N *  \brief  Representation of DMA stream register.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Stream configuration register. */
+N    volatile uint32_t NDTR;     /**< Number of data register. */
+N    volatile uint32_t PAR;      /**< Peripheral address register. */
+N    volatile uint32_t M0AR;     /**< Memory 0 address register. */
+N    volatile uint32_t M1AR;     /**< Memory 1 address register. */
+N    volatile uint32_t FCR;      /**< FIFO control register. */
+N} reg_dma_stream_t;
+N	
+N
+N/**
+N *  \struct reg_dma_t
+N *  \brief  Representation of DMA register.
+N *
+N *  Described in reference manual p.299ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t LISR;         /**< Low interrupt status register. */
+N    volatile uint32_t HISR;         /**< High interrupt status register. */
+N    volatile uint32_t LIFCR;        /**< Low interrupt flag clear register. */
+N    volatile uint32_t HIFCR;        /**< High interrupt flag clear register. */
+N    reg_dma_stream_t  STREAM[8];    /**< Struct of stream registers. */
+N} reg_dma_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_dma_t dma1_testing;
+S    extern reg_dma_t dma2_testing;
+S    #define DMA1                    ( (reg_dma_t *) &dma1_testing )
+S    #define DMA2                    ( (reg_dma_t *) &dma2_testing )
+N#else
+N    #define DMA1                    ( (reg_dma_t *) 0x40026000 )
+N    #define DMA2                    ( (reg_dma_t *) 0x40026400 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define DMA1_RCC_PATTERN        ( 0x1 << 21u )
+N#define DMA1_RESET()            REG_TGL(RCC->AHB1RSTR,  DMA1_RCC_PATTERN)
+N#define DMA1_ENABLE()           REG_SET(RCC->AHB1ENR,   DMA1_RCC_PATTERN)
+N#define DMA1_DISABLE()          REG_CLR(RCC->AHB1ENR,   DMA1_RCC_PATTERN)
+N#define DMA1_LP_ENABLE()        REG_SET(RCC->AHB1LPENR, DMA1_RCC_PATTERN)
+N#define DMA1_LP_DISABLE()       REG_CLR(RCC->AHB1LPENR, DMA1_RCC_PATTERN)
+N
+N#define DMA2_RCC_PATTERN        ( 0x1 << 22u )
+N#define DMA2_RESET()            REG_TGL(RCC->AHB1RSTR,  DMA2_RCC_PATTERN)
+N#define DMA2_ENABLE()           REG_SET(RCC->AHB1ENR,   DMA2_RCC_PATTERN)
+N#define DMA2_DISABLE()          REG_CLR(RCC->AHB1ENR,   DMA2_RCC_PATTERN)
+N#define DMA2_LP_ENABLE()        REG_SET(RCC->AHB1LPENR, DMA2_RCC_PATTERN)
+N#define DMA2_LP_DISABLE()       REG_CLR(RCC->AHB1LPENR, DMA2_RCC_PATTERN)
+N
+N
+N/*  DMA2D - direct memory access
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_dma2d_t
+N *  \brief  Representation of DMA2D register.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t ISR;      /**< Interrupt status register. */
+N    volatile uint32_t IFCR;     /**< Interrupt flag clear register. */
+N    volatile uint32_t FGMAR;    /**< Foreground memory address register. */
+N    volatile uint32_t FGOR;     /**< Foreground offset register. */
+N    volatile uint32_t BGMAR;    /**< Background memory address register. */
+N    volatile uint32_t BGOR;     /**< Background offset register. */
+N    volatile uint32_t FGPFCCR;  /**< Foreground PFC control register. */
+N    volatile uint32_t FGCOLR;   /**< Foreground color register. */
+N    volatile uint32_t BGPFCCR;  /**< Background PFC control register. */
+N    volatile uint32_t BGCOLR;   /**< Background color register. */
+N    volatile uint32_t FGCMAR;   /**< Foreground CLUT memory address reg. */
+N    volatile uint32_t BGCMAR;   /**< Background CLUT memory address reg. */
+N    volatile uint32_t OPFCCR;   /**< Output PFC control register. */
+N    volatile uint32_t OCOLR;    /**< Output color register. */
+N    volatile uint32_t OMAR;     /**< Output memory address register. */
+N    volatile uint32_t OOR;      /**< Output offset register. */
+N    volatile uint32_t NLR;      /**< Number of line register. */
+N    volatile uint32_t LWR;      /**< Line watermark register. */
+N    volatile uint32_t AMTCR;    /**< AHB master timer configuration reg. */
+N} reg_dma2d_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_dma2d_t dma2d_testing;
+S    #define DMA2D                   ( (reg_dma2d_t *) &dma2d_testing )
+N#else
+N    #define DMA2D                   ( (reg_dma2d_t *) 0x4002b000 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define DMA2D_RCC_PATTERN       ( 0x1 << 23u )
+N#define DMA2D_RESET()           REG_TGL(RCC->AHB1RSTR,  DMA1_RCC_PATTERN)
+N#define DMA2D_ENABLE()          REG_SET(RCC->AHB1ENR,   DMA1_RCC_PATTERN)
+N#define DMA2D_DISABLE()         REG_CLR(RCC->AHB1ENR,   DMA1_RCC_PATTERN)
+N#define DMA2D_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, DMA1_RCC_PATTERN)
+N#define DMA2D_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, DMA1_RCC_PATTERN)
+N
+N
+N/*  NVIC - nested vector interrupt controller
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_nvic_t
+N *  \brief  Representation of NVIC register.
+N *
+N *  Described in programming manual p.193ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t ISER0;    /**< Interrupt set-enable register 1. */
+N    volatile uint32_t ISER1;    /**< Interrupt set-enable register 2. */
+N    volatile uint32_t ISER2;    /**< Interrupt set-enable register 3. */
+N    uint32_t RESERVED1[29];
+N    volatile uint32_t ICER0;    /**< Interrupt clear-enable register 1. */
+N    volatile uint32_t ICER1;    /**< Interrupt clear-enable register 2. */
+N    volatile uint32_t ICER2;    /**< Interrupt clear-enable register 3. */
+N    uint32_t RESERVED2[29];
+N    volatile uint32_t ISPR0;    /**< Interrupt set-pending register 1. */
+N    volatile uint32_t ISPR1;    /**< Interrupt set-pending register 2. */
+N    volatile uint32_t ISPR2;    /**< Interrupt set-pending register 3. */
+N    uint32_t RESERVED3[29];
+N    volatile uint32_t ICPR0;    /**< Interrupt clear-pending register 1. */
+N    volatile uint32_t ICPR1;    /**< Interrupt clear-pending register 2. */
+N    volatile uint32_t ICPR2;    /**< Interrupt clear-pending register 3. */
+N    uint32_t RESERVED4[29];
+N    volatile uint32_t IABR0;    /**< Interrupt active bit register 1. */
+N    volatile uint32_t IABR1;    /**< Interrupt active bit register 2. */
+N    volatile uint32_t IABR2;    /**< Interrupt active bit register 3. */
+N    uint32_t RESERVED5[61];
+N    volatile uint8_t  IP[81];   /**< Interrupt priority. */
+N    uint8_t  RESERVED6[3];
+N    uint32_t RESERVED7[684];
+N    volatile uint32_t STIR;     /**< Software trigger interrupt register. */
+N} reg_nvic_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_nvic_t nvic_testing;
+S    #define NVIC                    ( (reg_nvic_t *) &nvic_testing )
+N#else
+N    #define NVIC                    ( (reg_nvic_t *) 0xe000e100 )
+N#endif
+N
+N/*  EXTI - external interrupt
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_exti_t
+N *  \brief  Representation of EXTI register.
+N *
+N *  Described in reference manual p.368ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t IMR;      /**< Interrupt mask register. */
+N    volatile uint32_t EMR;      /**< Event mask register. */
+N    volatile uint32_t RTSR;     /**< Rising trigger selection register. */
+N    volatile uint32_t FTSR;     /**< Falling trigger selection register. */
+N    volatile uint32_t SWIER;    /**< Software interrupt event register. */
+N    volatile uint32_t PR;       /**< Pending register. */
+N} reg_exti_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_exti_t exti_testing;
+S    #define EXTI                    ( (reg_exti_t *) &exti_testing )
+N#else
+N    #define EXTI                    ( (reg_exti_t *) 0x40013c00 )
+N#endif
+N
+N
+N/*  ADC - analog digital converter
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_adc_t
+N *  \brief  Representation of ADC register.
+N *
+N *  Described in reference manual p.385ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t CR1;      /**< Control register 1. */
+N    volatile uint32_t CR2;      /**< Control register 2. */
+N    volatile uint32_t SMPR1;    /**< Sample time register 1. */
+N    volatile uint32_t SMPR2;    /**< Sample time register 2. */
+N    volatile uint32_t JOFR1;    /**< Injected channel data offset register 1. */
+N    volatile uint32_t JOFR2;    /**< Injected channel data offset register 2. */
+N    volatile uint32_t JOFR3;    /**< Injected channel data offset register 3. */
+N    volatile uint32_t JOFR4;    /**< Injected channel data offset register 4. */
+N    volatile uint32_t HTR;      /**< Higher treshold register. */
+N    volatile uint32_t LTR;      /**< Lower treshold register. */
+N    volatile uint32_t SQR1;     /**< Regular sequence register 1. */
+N    volatile uint32_t SQR2;     /**< Regular sequence register 2. */
+N    volatile uint32_t SQR3;     /**< Regular sequence register 3. */
+N    volatile uint32_t JSQR;     /**< Injected sequence register. */
+N    volatile uint32_t JDR1;     /**< Injected data register 1. */
+N    volatile uint32_t JDR2;     /**< Injected data register 2. */
+N    volatile uint32_t JDR3;     /**< Injected data register 3. */
+N    volatile uint32_t JDR4;     /**< Injected data register 4. */
+N    volatile uint32_t DR;       /**< Regular data register. */
+N} reg_adc_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_adc_t adc1_testing;
+S    extern reg_adc_t adc2_testing;
+S    extern reg_adc_t adc3_testing;
+S    #define ADC1                    ( (reg_adc_t *) &adc1_testing )
+S    #define ADC2                    ( (reg_adc_t *) &adc2_testing )
+S    #define ADC3                    ( (reg_adc_t *) &adc3_testing )
+N#else
+N    #define ADC1                    ( (reg_adc_t *) 0x40012000 )
+N    #define ADC2                    ( (reg_adc_t *) 0x40012100 )
+N    #define ADC3                    ( (reg_adc_t *) 0x40012200 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define ADC1_RCC_PATTERN        ( 0x1 << 8u )
+N#define ADC1_ENABLE()           REG_SET(RCC->APB2ENR,   ADC1_RCC_PATTERN)
+N#define ADC1_DISABLE()          REG_CLR(RCC->APB2ENR,   ADC1_RCC_PATTERN)
+N#define ADC1_LP_ENABLE()        REG_SET(RCC->APB2LPENR, ADC1_RCC_PATTERN)
+N#define ADC1_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, ADC1_RCC_PATTERN)
+N
+N#define ADC2_RCC_PATTERN        ( 0x1 << 9u )
+N#define ADC2_ENABLE()           REG_SET(RCC->APB2ENR,   ADC2_RCC_PATTERN)
+N#define ADC2_DISABLE()          REG_CLR(RCC->APB2ENR,   ADC2_RCC_PATTERN)
+N#define ADC2_LP_ENABLE()        REG_SET(RCC->APB2LPENR, ADC2_RCC_PATTERN)
+N#define ADC2_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, ADC2_RCC_PATTERN)
+N
+N#define ADC3_RCC_PATTERN        ( 0x1 << 10u )                  
+N#define ADC3_ENABLE()           REG_SET(RCC->APB2ENR,   ADC3_RCC_PATTERN)
+N#define ADC3_DISABLE()          REG_CLR(RCC->APB2ENR,   ADC3_RCC_PATTERN)
+N#define ADC3_LP_ENABLE()        REG_SET(RCC->APB2LPENR, ADC3_RCC_PATTERN)
+N#define ADC3_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, ADC3_RCC_PATTERN)
+N
+N#define ADCx_RESET()            REG_TGL(RCC->APB2RSTR,  ADC1_RCC_PATTERN)
+N
+N
+N/**
+N *  \struct reg_adccom_t
+N *  \brief  Representation of ADC common register.
+N *
+N *  Described in reference manual p.385ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CSR;      /**< Common status register. */
+N    volatile uint32_t CCR;      /**< Common control register. */
+N    volatile uint32_t CDR;      /**< Common regular data register. */
+N} reg_adccom_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_adccom_t adccom_testing;
+S    #define ADCCOM                  ( (reg_adccom_t *) &adccom_testing )
+N#else
+N    #define ADCCOM                  ( (reg_adccom_t *) 0x40012300 )
+N#endif
+N
+N
+N/*  DAC - digital analog converter
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_dac_t
+N *  \brief  Representation of DAC register.
+N *
+N *  Described in reference manual p.430ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t SWTRIGR;  /**< Software trigger register. */
+N    volatile uint32_t DHR12R1;  /**< Ch1 12-bit right-aligned data register. */
+N    volatile uint32_t DHR12L1;  /**< Ch1 12-bit left-aligned data register. */
+N    volatile uint32_t DHR8R1;   /**< Ch1 8-bit right-aligned data register. */
+N    volatile uint32_t DHR12R2;  /**< Ch2 12-bit right-aligned data register. */
+N    volatile uint32_t DHR12L2;  /**< Ch2 12-bit left-aligned data register. */
+N    volatile uint32_t DHR8R2;   /**< Ch2 8-bit right-aligned data register. */
+N    volatile uint32_t DHR12RD;  /**< Dual 12-bit right-align. data register. */
+N    volatile uint32_t DHR12LD;  /**< Dual 12-bit left-aligned data register. */
+N    volatile uint32_t DHR8RD;   /**< Dual 8-bit right-aligned data register. */
+N    volatile uint32_t DOR1;     /**< Ch1 data output register. */
+N    volatile uint32_t DOR2;     /**< Ch2 data output register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N} reg_dac_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_dac_t dac_testing;
+S    #define DAC                     ( (reg_dac_t *) &dac_testing )
+N#else
+N    #define DAC                     ( (reg_dac_t *) 0x40007400 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define DAC_RCC_PATTERN         ( 0x1 << 29u )
+N#define DAC_RESET()             REG_TGL(RCC->APB1RSTR,  DAC_RCC_PATTERN)
+N#define DAC_ENABLE()            REG_SET(RCC->APB1ENR,   DAC_RCC_PATTERN)
+N#define DAC_DISABLE()           REG_CLR(RCC->APB1ENR,   DAC_RCC_PATTERN)
+N#define DAC_LP_ENABLE()         REG_SET(RCC->APB1LPENR, DAC_RCC_PATTERN)
+N#define DAC_LP_DISABLE()        REG_CLR(RCC->APB1LPENR, DAC_RCC_PATTERN)
+N
+N
+N/*  DCMI - digital camery mxxx interface
+N * ------------------------------------------------------------------------- */
+N	
+N/**
+N *  \struct reg_dcmi_t
+N *  \brief  Representation of DCMI register.
+N *
+N *  Described in reference manual p.452ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t RIS;      /**< Raw interrupt status register. */
+N    volatile uint32_t IER;      /**< Interrupt enable register. */
+N    volatile uint32_t MIS;      /**< Masked interrupt status register. */
+N    volatile uint32_t ICR;      /**< Interrupt clear register. */
+N    volatile uint32_t ESCR;     /**< Embedded sync. code register. */
+N    volatile uint32_t ESUR;     /**< Embedded sync. unmask register. */
+N    volatile uint32_t CWSTRT;   /**< Crop window start. */
+N    volatile uint32_t CWSIZE;   /**< Crop window size. */
+N    volatile uint32_t DR;       /**< Data register. */
+N} reg_dcmi_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_dcmi_t dcmi_testing;
+S    #define DCMI                    ( (reg_dcmi_t *) &dcmi_testing )
+N#else
+N    #define DCMI                    ( (reg_dcmi_t *) 0x50050000 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define DCMI_RCC_PATTERN        ( 0x1 << 0u )
+N#define DCMI_RESET()            REG_TGL(RCC->AHB2RSTR,  DCMI_RCC_PATTERN)
+N#define DCMI_ENABLE()           REG_SET(RCC->AHB2ENR,   DCMI_RCC_PATTERN)
+N#define DCMI_DISABLE()          REG_CLR(RCC->AHB2ENR,   DCMI_RCC_PATTERN)
+N#define DCMI_LP_ENABLE()        REG_SET(RCC->AHB2LPENR, DCMI_RCC_PATTERN)
+N#define DCMI_LP_DISABLE()       REG_CLR(RCC->AHB2LPENR, DCMI_RCC_PATTERN)
+N
+N
+N/*  LTDC - liquid txxx display controller
+N * ------------------------------------------------------------------------- */
+N	
+N/**
+N *  \struct reg_ltdc_lc_t
+N *  \brief  Representation of LTDC layer control register.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t WHPCR;    /**< Window horizontal pos. conf. register. */
+N    volatile uint32_t WVPCR;    /**< Window vertical pos. conf. register. */
+N    volatile uint32_t CKCR;     /**< Color keying configuration register. */
+N    volatile uint32_t PFCR;     /**< Pixel format configuration register. */
+N    volatile uint32_t CACR;     /**< Constant alpha configuration register. */
+N    volatile uint32_t DCCR;     /**< Default color configuration register. */
+N    volatile uint32_t BFCR;     /**< Blending factors conf. register. */
+N    volatile uint32_t CFBAR;    /**< Color frame buffer address register. */
+N    volatile uint32_t CFBLR;    /**< Color frame buffer length register. */
+N    volatile uint32_t CFBLNR;   /**< Color frame buffer line nr. register. */
+N    volatile uint32_t CLUTWR;   /**< CLUT write register. */
+N} reg_ltdc_lc_t;
+N
+N	
+N/**
+N *  \struct reg_ltdc_t
+N *  \brief  Representation of LTDC register.
+N *
+N *  Described in reference manual p.475ff.
+N */
+Ntypedef struct {
+N    uint32_t RESERVED1[2];
+N    volatile uint32_t SSCR;     /**< Sync. size configuration register. */
+N    volatile uint32_t BPCR;     /**< Back porch :D configuration register. */
+N    volatile uint32_t AWCR;     /**< Active width configuration register. */
+N    volatile uint32_t TWCR;     /**< Total width configuration register. */
+N    volatile uint32_t GCR;      /**< Global configuration register. */
+N    volatile uint32_t SRCR;     /**< Shadow reload configuration register. */
+N    volatile uint32_t BCCR;     /**< Background color conf. register. */
+N    volatile uint32_t IER;      /**< Interrupt enable register. */
+N    volatile uint32_t ISR;      /**< Interrupt status register. */
+N    volatile uint32_t ICR;      /**< Interrupt clear register. */
+N    volatile uint32_t LIPCR;    /**< Line interrupt position conf. register. */
+N    volatile uint32_t CPSR;     /**< Current position status register. */
+N    volatile uint32_t CDSR;     /**< Current display status register. */
+N    uint32_t RESERVED2[14];
+N    reg_ltdc_lc_t LAYER1;       /**< Layer 1 registers. */
+N    uint32_t RESERVED3[15];
+N    reg_ltdc_lc_t LAYER2;       /**< Layer 2 registers. */
+N} reg_ltdc_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_ltdc_t ltdc_testing;
+S    #define LTDC                    ( (reg_ltdc_t *) &ltdc_testing )
+N#else
+N    #define LTDC                    ( (reg_ltdc_t *) 0x40016800 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define LTDC_RCC_PATTERN        ( 0x1 << 26u )
+N#define LTDC_RESET()              REG_TGL(RCC->APB2RSTR,  LTDC_RCC_PATTERN)
+N#define LTDC_ENABLE()             REG_SET(RCC->APB2ENR,   LTDC_RCC_PATTERN)
+N#define LTDC_DISABLE()            REG_CLR(RCC->APB2ENR,   LTDC_RCC_PATTERN)
+N#define LTDC_LP_ENABLE()          REG_SET(RCC->APB2LPENR, LTDC_RCC_PATTERN)
+N#define LTDC_LP_DISABLE()         REG_CLR(RCC->APB2LPENR, LTDC_RCC_PATTERN)
+N
+N
+N/*  TIM - timer
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_tim_t
+N *  \brief  Representation of Timer register.
+N *
+N *  Described in reference manual p.507ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR1;      /**< Configuration register 1. */
+N    volatile uint32_t CR2;      /**< Configuration register 2. */
+N    volatile uint32_t SMCR;     /**< Slave mode control register. */
+N    volatile uint32_t DIER;     /**< DMA/interrupt enable register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t EGR;      /**< Event generation register. */
+N    volatile uint32_t CCMR1;    /**< Capture/compare mode register 1. */
+N    volatile uint32_t CCMR2;    /**< Capture/compare mode register 2. */
+N    volatile uint32_t CCER;     /**< Capture/compare enable register. */
+N    volatile uint32_t CNT;      /**< Count register. */
+N    volatile uint32_t PSC;      /**< Prescaler register. */
+N    volatile uint32_t ARR;      /**< Auto reload register. */
+N    volatile uint32_t RCR;      /**< Repetition counter register. */
+N    volatile uint32_t CCR1;     /**< Capture/compare register 1. */
+N    volatile uint32_t CCR2;     /**< Capture/compare register 2. */
+N    volatile uint32_t CCR3;     /**< Capture/compare register 3. */
+N    volatile uint32_t CCR4;     /**< Capture/compare register 4. */
+N    volatile uint32_t BDTR;     /**< Break and dead-time register. */
+N    volatile uint32_t DCR;      /**< DMA control register. */
+N    volatile uint32_t DMAR;     /**< DMA address for full transfer. */
+N    volatile uint32_t OR;       /**< Option register. */
+N} reg_tim_t;
+N
+N
+N/* Register macros */
+N
+N
+N#ifdef TESTING
+S    extern reg_tim_t tim1_testing;
+S    extern reg_tim_t tim2_testing;
+S    extern reg_tim_t tim3_testing;
+S    extern reg_tim_t tim4_testing;
+S    extern reg_tim_t tim5_testing;
+S    extern reg_tim_t tim6_testing;
+S    extern reg_tim_t tim7_testing;
+S    extern reg_tim_t tim8_testing;
+S    extern reg_tim_t tim9_testing;
+S    extern reg_tim_t tim10_testing;
+S    extern reg_tim_t tim11_testing;
+S    extern reg_tim_t tim12_testing;
+S    extern reg_tim_t tim13_testing;
+S    extern reg_tim_t tim14_testing;
+S    #define TIM1                    ( (reg_tim_t *) &tim1_testing )
+S    #define TIM2                    ( (reg_tim_t *) &tim2_testing )
+S    #define TIM3                    ( (reg_tim_t *) &tim3_testing )
+S    #define TIM4                    ( (reg_tim_t *) &tim4_testing )
+S    #define TIM5                    ( (reg_tim_t *) &tim5_testing )
+S    #define TIM6                    ( (reg_tim_t *) &tim6_testing )
+S    #define TIM7                    ( (reg_tim_t *) &tim7_testing )
+S    #define TIM8                    ( (reg_tim_t *) &tim8_testing )
+S    #define TIM9                    ( (reg_tim_t *) &tim9_testing )
+S    #define TIM10                   ( (reg_tim_t *) &tim10_testing )
+S    #define TIM11                   ( (reg_tim_t *) &tim11_testing )
+S    #define TIM12                   ( (reg_tim_t *) &tim12_testing )
+S    #define TIM13                   ( (reg_tim_t *) &tim13_testing )
+S    #define TIM14                   ( (reg_tim_t *) &tim14_testing )
+N#else
+N    #define TIM1                    ( (reg_tim_t *) 0x40010000 )
+N    #define TIM2                    ( (reg_tim_t *) 0x40000000 )
+N    #define TIM3                    ( (reg_tim_t *) 0x40000400 )
+N    #define TIM4                    ( (reg_tim_t *) 0x40000800 )
+N    #define TIM5                    ( (reg_tim_t *) 0x40000c00 )
+N    #define TIM6                    ( (reg_tim_t *) 0x40001000 )
+N    #define TIM7                    ( (reg_tim_t *) 0x40001400 )
+N    #define TIM8                    ( (reg_tim_t *) 0x40010400 )
+N    #define TIM9                    ( (reg_tim_t *) 0x40014000 )
+N    #define TIM10                   ( (reg_tim_t *) 0x40014400 )
+N    #define TIM11                   ( (reg_tim_t *) 0x40014800 )
+N    #define TIM12                   ( (reg_tim_t *) 0x40001800 )
+N    #define TIM13                   ( (reg_tim_t *) 0x40001c00 )
+N    #define TIM14                   ( (reg_tim_t *) 0x40002000 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define TIM1_RCC_PATTERN        ( 0x1 << 0u )
+N#define TIM1_RESET()            REG_TGL(RCC->APB2RSTR,  TIM1_RCC_PATTERN)
+N#define TIM1_ENABLE()           REG_SET(RCC->APB2ENR,   TIM1_RCC_PATTERN)
+N#define TIM1_DISABLE()          REG_CLR(RCC->APB2ENR,   TIM1_RCC_PATTERN)
+N#define TIM1_LP_ENABLE()        REG_SET(RCC->APB2LPENR, TIM1_RCC_PATTERN)
+N#define TIM1_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, TIM1_RCC_PATTERN)
+N
+N#define TIM2_RCC_PATTERN        ( 0x1 << 0u )
+N#define TIM2_RESET()            REG_TGL(RCC->APB1RSTR,  TIM2_RCC_PATTERN)
+N#define TIM2_ENABLE()           REG_SET(RCC->APB1ENR,   TIM2_RCC_PATTERN)
+N#define TIM2_DISABLE()          REG_CLR(RCC->APB1ENR,   TIM2_RCC_PATTERN)
+N#define TIM2_LP_ENABLE()        REG_SET(RCC->APB1LPENR, TIM2_RCC_PATTERN)
+N#define TIM2_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, TIM2_RCC_PATTERN)
+N
+N#define TIM3_RCC_PATTERN        ( 0x1 << 1u )
+N#define TIM3_RESET()            REG_TGL(RCC->APB1RSTR,  TIM3_RCC_PATTERN)
+N#define TIM3_ENABLE()           REG_SET(RCC->APB1ENR,   TIM3_RCC_PATTERN)
+N#define TIM3_DISABLE()          REG_CLR(RCC->APB1ENR,   TIM3_RCC_PATTERN)
+N#define TIM3_LP_ENABLE()        REG_SET(RCC->APB1LPENR, TIM3_RCC_PATTERN)
+N#define TIM3_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, TIM3_RCC_PATTERN)
+N           
+N#define TIM4_RCC_PATTERN        ( 0x1 << 2u )
+N#define TIM4_RESET()            REG_TGL(RCC->APB1RSTR,  TIM4_RCC_PATTERN)
+N#define TIM4_ENABLE()           REG_SET(RCC->APB1ENR,   TIM4_RCC_PATTERN)
+N#define TIM4_DISABLE()          REG_CLR(RCC->APB1ENR,   TIM4_RCC_PATTERN)
+N#define TIM4_LP_ENABLE()        REG_SET(RCC->APB1LPENR, TIM4_RCC_PATTERN)
+N#define TIM4_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, TIM4_RCC_PATTERN)
+N           
+N#define TIM5_RCC_PATTERN        ( 0x1 << 3u )
+N#define TIM5_RESET()            REG_TGL(RCC->APB1RSTR,  TIM5_RCC_PATTERN)
+N#define TIM5_ENABLE()           REG_SET(RCC->APB1ENR,   TIM5_RCC_PATTERN)
+N#define TIM5_DISABLE()          REG_CLR(RCC->APB1ENR,   TIM5_RCC_PATTERN)
+N#define TIM5_LP_ENABLE()        REG_SET(RCC->APB1LPENR, TIM5_RCC_PATTERN)
+N#define TIM5_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, TIM5_RCC_PATTERN)
+N           
+N#define TIM6_RCC_PATTERN        ( 0x1 << 4u )
+N#define TIM6_RESET()            REG_TGL(RCC->APB1RSTR,  TIM6_RCC_PATTERN)
+N#define TIM6_ENABLE()           REG_SET(RCC->APB1ENR,   TIM6_RCC_PATTERN)
+N#define TIM6_DISABLE()          REG_CLR(RCC->APB1ENR,   TIM6_RCC_PATTERN)
+N#define TIM6_LP_ENABLE()        REG_SET(RCC->APB1LPENR, TIM6_RCC_PATTERN)
+N#define TIM6_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, TIM6_RCC_PATTERN)
+N
+N#define TIM7_RCC_PATTERN        ( 0x1 << 5u )
+N#define TIM7_RESET()            REG_TGL(RCC->APB1RSTR,  TIM7_RCC_PATTERN)
+N#define TIM7_ENABLE()           REG_SET(RCC->APB1ENR,   TIM7_RCC_PATTERN)
+N#define TIM7_DISABLE()          REG_CLR(RCC->APB1ENR,   TIM7_RCC_PATTERN)
+N#define TIM7_LP_ENABLE()        REG_SET(RCC->APB1LPENR, TIM7_RCC_PATTERN)
+N#define TIM7_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, TIM7_RCC_PATTERN)
+N
+N#define TIM8_RCC_PATTERN        ( 0x1 << 1u )
+N#define TIM8_RESET()            REG_TGL(RCC->APB2RSTR,  TIM8_RCC_PATTERN)
+N#define TIM8_ENABLE()           REG_SET(RCC->APB2ENR,   TIM8_RCC_PATTERN)
+N#define TIM8_DISABLE()          REG_CLR(RCC->APB2ENR,   TIM8_RCC_PATTERN)
+N#define TIM8_LP_ENABLE()        REG_SET(RCC->APB2LPENR, TIM8_RCC_PATTERN)
+N#define TIM8_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, TIM8_RCC_PATTERN)
+N
+N#define TIM9_RCC_PATTERN        ( 0x1 << 16u )
+N#define TIM9_RESET()            REG_TGL(RCC->APB2RSTR,  TIM9_RCC_PATTERN)
+N#define TIM9_ENABLE()           REG_SET(RCC->APB2ENR,   TIM9_RCC_PATTERN)
+N#define TIM9_DISABLE()          REG_CLR(RCC->APB2ENR,   TIM9_RCC_PATTERN)
+N#define TIM9_LP_ENABLE()        REG_SET(RCC->APB2LPENR, TIM9_RCC_PATTERN)
+N#define TIM9_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, TIM9_RCC_PATTERN)
+N
+N#define TIM10_RCC_PATTERN       ( 0x1 << 17u )
+N#define TIM10_RESET()           REG_TGL(RCC->APB2RSTR,  TIM10_RCC_PATTERN)
+N#define TIM10_ENABLE()          REG_SET(RCC->APB2ENR,   TIM10_RCC_PATTERN)
+N#define TIM10_DISABLE()         REG_CLR(RCC->APB2ENR,   TIM10_RCC_PATTERN)
+N#define TIM10_LP_ENABLE()       REG_SET(RCC->APB2LPENR, TIM10_RCC_PATTERN)
+N#define TIM10_LP_DISABLE()      REG_CLR(RCC->APB2LPENR, TIM10_RCC_PATTERN)
+N
+N#define TIM11_RCC_PATTERN       ( 0x1 << 18u )
+N#define TIM11_RESET()           REG_TGL(RCC->APB2RSTR,  TIM11_RCC_PATTERN)
+N#define TIM11_ENABLE()          REG_SET(RCC->APB2ENR,   TIM11_RCC_PATTERN)
+N#define TIM11_DISABLE()         REG_CLR(RCC->APB2ENR,   TIM11_RCC_PATTERN)
+N#define TIM11_LP_ENABLE()       REG_SET(RCC->APB2LPENR, TIM11_RCC_PATTERN)
+N#define TIM11_LP_DISABLE()      REG_CLR(RCC->APB2LPENR, TIM11_RCC_PATTERN)
+N
+N#define TIM12_RCC_PATTERN       ( 0x1 << 6u )
+N#define TIM12_RESET()           REG_TGL(RCC->APB1RSTR,  TIM12_RCC_PATTERN)
+N#define TIM12_ENABLE()          REG_SET(RCC->APB1ENR,   TIM12_RCC_PATTERN)
+N#define TIM12_DISABLE()         REG_CLR(RCC->APB1ENR,   TIM12_RCC_PATTERN)
+N#define TIM12_LP_ENABLE()       REG_SET(RCC->APB1LPENR, TIM12_RCC_PATTERN)
+N#define TIM12_LP_DISABLE()      REG_CLR(RCC->APB1LPENR, TIM12_RCC_PATTERN)
+N                            
+N#define TIM13_RCC_PATTERN       ( 0x1 << 7u )
+N#define TIM13_RESET()           REG_TGL(RCC->APB1RSTR,  TIM13_RCC_PATTERN)
+N#define TIM13_ENABLE()          REG_SET(RCC->APB1ENR,   TIM13_RCC_PATTERN)
+N#define TIM13_DISABLE()         REG_CLR(RCC->APB1ENR,   TIM13_RCC_PATTERN)
+N#define TIM13_LP_ENABLE()       REG_SET(RCC->APB1LPENR, TIM13_RCC_PATTERN)
+N#define TIM13_LP_DISABLE()      REG_CLR(RCC->APB1LPENR, TIM13_RCC_PATTERN)
+N                            
+N#define TIM14_RCC_PATTERN       ( 0x1 << 8u )
+N#define TIM14_RESET()           REG_TGL(RCC->APB1RSTR,  TIM14_RCC_PATTERN)
+N#define TIM14_ENABLE()          REG_SET(RCC->APB1ENR,   TIM14_RCC_PATTERN)
+N#define TIM14_DISABLE()         REG_CLR(RCC->APB1ENR,   TIM14_RCC_PATTERN)
+N#define TIM14_LP_ENABLE()       REG_SET(RCC->APB1LPENR, TIM14_RCC_PATTERN)
+N#define TIM14_LP_DISABLE()      REG_CLR(RCC->APB1LPENR, TIM14_RCC_PATTERN)
+N
+N
+N/*  IWDG - independent watchdog
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_iwdg_t
+N *  \brief  Representation of IWDG register.
+N *
+N *  Described in reference manual p.689ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t KR;       /**< Key register. */
+N    volatile uint32_t PR;       /**< Prescaler register. */
+N    volatile uint32_t RLR;      /**< Reload register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N} reg_iwdg_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_iwdg_t iwdg_testing;
+S    #define IWDG                    ( (reg_iwdg_t *) &iwdg_testing )
+N#else
+N    #define IWDG                    ( (reg_iwdg_t *) 0x40003000 )
+N#endif
+N
+N
+N/*  WWDG - window watch dog
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_iwdg_t
+N *  \brief  Representation of IWDG register.
+N *
+N *  Described in reference manual p.689ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t CFR;      /**< Configuration register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N} reg_wwdg_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_wwdg_t wwgd_testing;
+S    #define WWDG                    ( (reg_wwdg_t *) &wwgd_testing )
+N#else
+N    #define WWDG                    ( (reg_wwdg_t *) 0x40002c00 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define WWDG_RCC_PATTERN        ( 0x1 << 11u )
+N#define WWDG_RESET()            REG_TGL(RCC->APB1RSTR,  WWDG_RCC_PATTERN)
+N#define WWDG_ENABLE()           REG_SET(RCC->APB1ENR,   WWDG_RCC_PATTERN)
+N#define WWDG_DISABLE()          REG_CLR(RCC->APB1ENR,   WWDG_RCC_PATTERN)
+N#define WWDG_LP_ENABLE()        REG_SET(RCC->APB1LPENR, WWDG_RCC_PATTERN)
+N#define WWDG_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, WWDG_RCC_PATTERN)
+N
+N
+N/*  CRYP - cryptographic processor
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_cryp_t
+N *  \brief  Representation of CRYP register.
+N *
+N *  Described in reference manual p.704ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t DIN;      /**< Data input register. */
+N    volatile uint32_t DOUT;     /**< Data output register. */
+N    volatile uint32_t DMACR;    /**< DMA control register. */
+N    volatile uint32_t IMSCR;    /**< Interrupt mask set/clear register. */
+N    volatile uint32_t RISR;     /**< Raw interrupt status register. */
+N    volatile uint32_t MISR;     /**< Masked interrupt status register. */
+N    volatile uint32_t K0LR;     /**< Key (left) register 1. */
+N    volatile uint32_t K0RR;     /**< Key (right) register 1. */
+N    volatile uint32_t K1LR;     /**< Key (left) register 2. */
+N    volatile uint32_t K1RR;     /**< Key (right) register 2. */
+N    volatile uint32_t K2LR;     /**< Key (left) register 3. */
+N    volatile uint32_t K2RR;     /**< Key (right) register 3. */
+N    volatile uint32_t K3LR;     /**< Key (left) register 4. */
+N    volatile uint32_t K3RR;     /**< Key (right) register 4. */
+N    volatile uint32_t IV0LR;    /**< Initialisation vector (left) reg. 1. */
+N    volatile uint32_t IV0RR;    /**< Initialisation vector (right) reg. 1. */
+N    volatile uint32_t IV1LR;    /**< Initialisation vector (left) reg. 2. */
+N    volatile uint32_t IV1RR;    /**< Initialisation vector (right) reg. 2. */
+N    volatile uint32_t CSGCMCCM0R;       /**< Context swap register 1. */
+N    volatile uint32_t CSGCMCCM1R;       /**< Context swap register 2. */
+N    volatile uint32_t CSGCMCCM2R;       /**< Context swap register 3. */
+N    volatile uint32_t CSGCMCCM3R;       /**< Context swap register 4. */
+N    volatile uint32_t CSGCMCCM4R;       /**< Context swap register 5. */
+N    volatile uint32_t CSGCMCCM5R;       /**< Context swap register 6. */
+N    volatile uint32_t CSGCMCCM6R;       /**< Context swap register 7. */
+N    volatile uint32_t CSGCMCCM7R;       /**< Context swap register 8. */
+N    volatile uint32_t CSGCM0R;          /**< Context swap register 1. */
+N    volatile uint32_t CSGCM1R;          /**< Context swap register 2. */
+N    volatile uint32_t CSGCM2R;          /**< Context swap register 3. */
+N    volatile uint32_t CSGCM3R;          /**< Context swap register 4. */
+N    volatile uint32_t CSGCM4R;          /**< Context swap register 5. */
+N    volatile uint32_t CSGCM5R;          /**< Context swap register 6. */
+N    volatile uint32_t CSGCM6R;          /**< Context swap register 7. */
+N    volatile uint32_t CSGCM7R;          /**< Context swap register 8. */
+N} reg_cryp_t;	
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_cryp_t cryp_testing;
+S    #define CRYP                    ( (reg_cryp_t *) &cryp_testing )
+N#else
+N    #define CRYP                    ( (reg_cryp_t *) 0x50060000 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define CRYP_RCC_PATTERN        ( 0x1 << 4u )
+N#define CRYP_RESET()            REG_TGL(RCC->AHB2RSTR,  CRYP_RCC_PATTERN)
+N#define CRYP_ENABLE()           REG_SET(RCC->AHB2ENR,   CRYP_RCC_PATTERN)
+N#define CRYP_DISABLE()          REG_CLR(RCC->AHB2ENR,   CRYP_RCC_PATTERN)
+N#define CRYP_LP_ENABLE()        REG_SET(RCC->AHB2LPENR, CRYP_RCC_PATTERN)
+N#define CRYP_LP_DISABLE()       REG_CLR(RCC->AHB2LPENR, CRYP_RCC_PATTERN)
+N
+N
+N/*  RNG - random number generator
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_rng_t
+N *  \brief  Representation of RNG register.
+N *
+N *  Described in reference manual p.750ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t DR;       /**< Data register. */
+N} reg_rng_t;	
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_rng_t rng_testing;
+S    #define RNG                     ( (reg_rng_t *) &rng_testing )
+N#else
+N    #define RNG                     ( (reg_rng_t *) 0x50060800 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define RNG_RCC_PATTERN         ( 0x1 << 6u )
+N#define RNG_RESET()             REG_TGL(RCC->AHB2RSTR,  RNG_RCC_PATTERN)
+N#define RNG_ENABLE()            REG_SET(RCC->AHB2ENR,   RNG_RCC_PATTERN)
+N#define RNG_DISABLE()           REG_CLR(RCC->AHB2ENR,   RNG_RCC_PATTERN)
+N#define RNG_LP_ENABLE()         REG_SET(RCC->AHB2LPENR, RNG_RCC_PATTERN)
+N#define RNG_LP_DISABLE()        REG_CLR(RCC->AHB2LPENR, RNG_RCC_PATTERN)
+N
+N
+N/*  HASH - hashxxx
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_hash_t
+N *  \brief  Representation of HASH register.
+N *
+N *  Described in reference manual p.755ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t DIN;      /**< Data input register. */
+N    volatile uint32_t STR;      /**< Start register. */
+N//    volatile uint32_t HR[5];
+N    uint32_t RESERVED1[5];
+N    volatile uint32_t IMR;      /**< Interrupt enable register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N    uint32_t RESERVED2[48];
+N    volatile uint32_t CSR[54];  /**< Context swap registers. */
+N    uint32_t RESERVED3[80];
+N    volatile uint32_t HR0;      /**< Hash digest register 1. */
+N    volatile uint32_t HR1;      /**< Hash digest register 2. */
+N    volatile uint32_t HR2;      /**< Hash digest register 3. */
+N    volatile uint32_t HR3;      /**< Hash digest register 4. */
+N    volatile uint32_t HR4;      /**< Hash digest register 5. */
+N    volatile uint32_t HR5;      /**< Hash digest register 6. */
+N    volatile uint32_t HR6;      /**< Hash digest register 7. */
+N    volatile uint32_t HR7;      /**< Hash digest register 8. */
+N} reg_hash_t;	
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_hash_t hash_testing;
+S    #define HASH                     ( (reg_hash_t *) &hash_testing )
+N#else
+N    #define HASH                    ( (reg_hash_t *) 0x50060400 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define HASH_RCC_PATTERN        ( 0x1 << 5u )
+N#define HASH_RESET()            REG_TGL(RCC->AHB2RSTR,  HASH_RCC_PATTERN)
+N#define HASH_ENABLE()           REG_SET(RCC->AHB2ENR,   HASH_RCC_PATTERN)
+N#define HASH_DISABLE()          REG_CLR(RCC->AHB2ENR,   HASH_RCC_PATTERN)
+N#define HASH_LP_ENABLE()        REG_SET(RCC->AHB2LPENR, HASH_RCC_PATTERN)
+N#define HASH_LP_DISABLE()       REG_CLR(RCC->AHB2LPENR, HASH_RCC_PATTERN)
+N
+N
+N/*  RTC - real time clock
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_rtc_t
+N *  \brief  Representation of RTC register.
+N *
+N *  Described in reference manual p.778ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t TR;       /**< Time register. */
+N    volatile uint32_t DR;       /**< Date register. */
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t ISR;      /**< Initialization/status register. */
+N    volatile uint32_t PRER;     /**< Prescaler register. */
+N    volatile uint32_t WUTR;     /**< Wake-up timer register. */
+N    volatile uint32_t CALIBR;   /**< Calibration register. */
+N    volatile uint32_t ALRMAR;   /**< Alarm A register. */
+N    volatile uint32_t ALRMBR;   /**< Alarm B register. */
+N    volatile uint32_t WPR;      /**< Write protection register. */
+N    volatile uint32_t SSR;      /**< Sub-second register. */
+N    volatile uint32_t SHIFTR;   /**< Shift control register. */
+N    volatile uint32_t TSTR;     /**< Timestamp time register. */
+N    volatile uint32_t TSDR;     /**< Timestamp date register. */
+N    volatile uint32_t TSSSR;    /**< Timestamp sub-second register. */
+N    volatile uint32_t CALR;     /**< Calibration register. */
+N    volatile uint32_t TAFCR;    /**< Tamper and AF configuration register. */
+N    volatile uint32_t ALRMASSR; /**< Alarm A sub-second register. */
+N    volatile uint32_t ALRMBSSR; /**< Alarm B sub-second register. */
+N    uint32_t RESERVED;
+N    volatile uint32_t BKP0R;    /**< Backup register 1. */
+N    volatile uint32_t BKP1R;    /**< Backup register 2. */
+N    volatile uint32_t BKP2R;    /**< Backup register 3. */
+N    volatile uint32_t BKP3R;    /**< Backup register 4. */
+N    volatile uint32_t BKP4R;    /**< Backup register 5. */
+N    volatile uint32_t BKP5R;    /**< Backup register 6. */
+N    volatile uint32_t BKP6R;    /**< Backup register 7. */
+N    volatile uint32_t BKP7R;    /**< Backup register 8. */
+N    volatile uint32_t BKP8R;    /**< Backup register 9. */
+N    volatile uint32_t BKP9R;    /**< Backup register 10. */
+N    volatile uint32_t BKP10R;   /**< Backup register 11. */
+N    volatile uint32_t BKP11R;   /**< Backup register 12. */
+N    volatile uint32_t BKP12R;   /**< Backup register 13. */
+N    volatile uint32_t BKP13R;   /**< Backup register 14. */
+N    volatile uint32_t BKP14R;   /**< Backup register 15. */
+N    volatile uint32_t BKP15R;   /**< Backup register 16. */
+N    volatile uint32_t BKP16R;   /**< Backup register 17. */
+N    volatile uint32_t BKP17R;   /**< Backup register 18. */
+N    volatile uint32_t BKP18R;   /**< Backup register 19. */
+N    volatile uint32_t BKP19R;   /**< Backup register 20. */
+N} reg_rtc_t;	
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_rtc_t rtc_testing;
+S    #define RTC                     ( (reg_rtc_t *) &hash_testing )
+N#else
+N    #define RTC                     ( (reg_rtc_t *) 0x40002800 )
+N#endif
+N
+N
+N/*  I2C - inter-integrated circuit interface
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_i2c_t
+N *  \brief  Representation of I2C register.
+N *
+N *  Described in reference manual p.817ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR1;      /**< Control register 1. */
+N    volatile uint32_t CR2;      /**< Control register 2. */
+N    volatile uint32_t OAR1;     /**< Own address register 1. */
+N    volatile uint32_t OAR2;     /**< Own address register 2. */
+N    volatile uint32_t DR;       /**< Data register. */
+N    volatile uint32_t SR1;      /**< Status register 1. */
+N    volatile uint32_t SR2;      /**< Status register 2. */
+N    volatile uint32_t CCR;      /**< Clock control register. */
+N    volatile uint32_t TRISE;    /**< TRISE register. */
+N    volatile uint32_t FLTR;     /**< FLTR register. */
+N} reg_i2c_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_i2c_t i2c1_testing;
+S    extern reg_i2c_t i2c2_testing;
+S    extern reg_i2c_t i2c3_testing;
+S    #define I2C1                    ( (reg_i2c_t *) &i2c1_testing )
+S    #define I2C2                    ( (reg_i2c_t *) &i2c2_testing )
+S    #define I2C3                    ( (reg_i2c_t *) &i2c3_testing )
+N#else
+N    #define I2C1                    ( (reg_i2c_t *) 0x40005400 )
+N    #define I2C2                    ( (reg_i2c_t *) 0x40005800 )
+N    #define I2C3                    ( (reg_i2c_t *) 0x40005c00 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define I2C1_RCC_PATTERN        ( 0x1 << 21u )
+N#define I2C1_RESET()            REG_TGL(RCC->APB1RSTR,  I2C1_RCC_PATTERN)
+N#define I2C1_ENABLE()           REG_SET(RCC->APB1ENR,   I2C1_RCC_PATTERN)
+N#define I2C1_DISABLE()          REG_CLR(RCC->APB1ENR,   I2C1_RCC_PATTERN)
+N#define I2C1_LP_ENABLE()        REG_SET(RCC->APB1LPENR, I2C1_RCC_PATTERN)
+N#define I2C1_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, I2C1_RCC_PATTERN)
+N
+N#define I2C2_RCC_PATTERN        ( 0x1 << 22u )
+N#define I2C2_RESET()            REG_TGL(RCC->APB1RSTR,  I2C2_RCC_PATTERN)
+N#define I2C2_ENABLE()           REG_SET(RCC->APB1ENR,   I2C2_RCC_PATTERN)
+N#define I2C2_DISABLE()          REG_CLR(RCC->APB1ENR,   I2C2_RCC_PATTERN)
+N#define I2C2_LP_ENABLE()        REG_SET(RCC->APB1LPENR, I2C2_RCC_PATTERN)
+N#define I2C2_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, I2C2_RCC_PATTERN)
+N
+N#define I2C3_RCC_PATTERN        ( 0x1 << 23u )                 
+N#define I2C3_RESET()            REG_TGL(RCC->APB1RSTR,  I2C3_RCC_PATTERN)
+N#define I2C3_ENABLE()           REG_SET(RCC->APB1ENR,   I2C3_RCC_PATTERN)
+N#define I2C3_DISABLE()          REG_CLR(RCC->APB1ENR,   I2C3_RCC_PATTERN)
+N#define I2C3_LP_ENABLE()        REG_SET(RCC->APB1LPENR, I2C3_RCC_PATTERN)
+N#define I2C3_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, I2C3_RCC_PATTERN)
+N
+N
+N/*  SPI - serial peripheral interface
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_spi_t
+N *  \brief  Representation of SPI register.
+N *
+N *  Described in reference manual p.852ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR1;      /**< Control register 1. */
+N    volatile uint32_t CR2;      /**< Control register 2. */
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t DR;       /**< Data register. */
+N    volatile uint32_t CRCPR;    /**< CRC polynomial register. */
+N    volatile uint32_t RXCRCR;   /**< RX CRC register. */
+N    volatile uint32_t TXCRCR;   /**< TX CRC register. */
+N    volatile uint32_t I2SCFGR;  /**< Configuration register. */
+N    volatile uint32_t I2SPR;    /**< Prescaler register. */
+N} reg_spi_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_spi_t spi1_testing;
+S    extern reg_spi_t spi2_testing;
+S    extern reg_spi_t spi3_testing;
+S    extern reg_spi_t spi4_testing;
+S    extern reg_spi_t spi5_testing;
+S    extern reg_spi_t spi6_testing;
+S    #define SPI1                    ( (reg_spi_t *) &spi1_testing )
+S    #define SPI2                    ( (reg_spi_t *) &spi2_testing )
+S    #define SPI3                    ( (reg_spi_t *) &spi3_testing )
+S    #define SPI4                    ( (reg_spi_t *) &spi4_testing )
+S    #define SPI5                    ( (reg_spi_t *) &spi5_testing )
+S    #define SPI6                    ( (reg_spi_t *) &spi6_testing )
+N#else
+N    #define SPI1                    ( (reg_spi_t *) 0x40013000 )
+N    #define SPI2                    ( (reg_spi_t *) 0x40003800 )
+N    #define SPI3                    ( (reg_spi_t *) 0x40003c00 )
+N    #define SPI4                    ( (reg_spi_t *) 0x40013400 )
+N    #define SPI5                    ( (reg_spi_t *) 0x40015000 )
+N    #define SPI6                    ( (reg_spi_t *) 0x40015400 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define SPI1_RCC_PATTERN        ( 0x1 << 12u )
+N#define SPI1_RESET()            REG_TGL(RCC->APB2RSTR,  SPI1_RCC_PATTERN)
+N#define SPI1_ENABLE()           REG_SET(RCC->APB2ENR,   SPI1_RCC_PATTERN)
+N#define SPI1_DISABLE()          REG_CLR(RCC->APB2ENR,   SPI1_RCC_PATTERN)
+N#define SPI1_LP_ENABLE()        REG_SET(RCC->APB2LPENR, SPI1_RCC_PATTERN)
+N#define SPI1_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, SPI1_RCC_PATTERN)
+N
+N#define SPI2_RCC_PATTERN        ( 0x1 << 14u )
+N#define SPI2_RESET()            REG_TGL(RCC->APB1RSTR,  SPI2_RCC_PATTERN)
+N#define SPI2_ENABLE()           REG_SET(RCC->APB1ENR,   SPI2_RCC_PATTERN)
+N#define SPI2_DISABLE()          REG_CLR(RCC->APB1ENR,   SPI2_RCC_PATTERN)
+N#define SPI2_LP_ENABLE()        REG_SET(RCC->APB1LPENR, SPI2_RCC_PATTERN)
+N#define SPI2_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, SPI2_RCC_PATTERN)
+N
+N#define SPI3_RCC_PATTERN        ( 0x1 << 15u )
+N#define SPI3_RESET()            REG_TGL(RCC->APB1RSTR,  SPI3_RCC_PATTERN)
+N#define SPI3_ENABLE()           REG_SET(RCC->APB1ENR,   SPI3_RCC_PATTERN)
+N#define SPI3_DISABLE()          REG_CLR(RCC->APB1ENR,   SPI3_RCC_PATTERN)
+N#define SPI3_LP_ENABLE()        REG_SET(RCC->APB1LPENR, SPI3_RCC_PATTERN)
+N#define SPI3_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, SPI3_RCC_PATTERN)
+N
+N#define SPI4_RCC_PATTERN        ( 0x1 << 13u )
+N#define SPI4_RESET()            REG_TGL(RCC->APB2RSTR,  SPI4_RCC_PATTERN)
+N#define SPI4_ENABLE()           REG_SET(RCC->APB2ENR,   SPI4_RCC_PATTERN)
+N#define SPI4_DISABLE()          REG_CLR(RCC->APB2ENR,   SPI4_RCC_PATTERN)
+N#define SPI4_LP_ENABLE()        REG_SET(RCC->APB2LPENR, SPI4_RCC_PATTERN)
+N#define SPI4_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, SPI4_RCC_PATTERN)
+N
+N#define SPI5_RCC_PATTERN        ( 0x1 << 20u )
+N#define SPI5_RESET()            REG_TGL(RCC->APB2RSTR,  SPI5_RCC_PATTERN)
+N#define SPI5_ENABLE()           REG_SET(RCC->APB2ENR,   SPI5_RCC_PATTERN)
+N#define SPI5_DISABLE()          REG_CLR(RCC->APB2ENR,   SPI5_RCC_PATTERN)
+N#define SPI5_LP_ENABLE()        REG_SET(RCC->APB2LPENR, SPI5_RCC_PATTERN)
+N#define SPI5_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, SPI5_RCC_PATTERN)
+N
+N#define SPI6_RCC_PATTERN        ( 0x1 << 21u )
+N#define SPI6_RESET()            REG_TGL(RCC->APB2RSTR,  SPI6_RCC_PATTERN)
+N#define SPI6_ENABLE()           REG_SET(RCC->APB2ENR,   SPI6_RCC_PATTERN)
+N#define SPI6_DISABLE()          REG_CLR(RCC->APB2ENR,   SPI6_RCC_PATTERN)
+N#define SPI6_LP_ENABLE()        REG_SET(RCC->APB2LPENR, SPI6_RCC_PATTERN)
+N#define SPI6_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, SPI6_RCC_PATTERN)
+N
+N
+N/*  SAI - sxxx audio interface
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_sai_block_t
+N *  \brief  Serial audio interface subblock register.
+N *
+N *  Described in reference manual p.912ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CR1;      /**< Configuration register 1. */
+N    volatile uint32_t CR2;      /**< Configuration register 2. */
+N    volatile uint32_t FRCR;     /**< Frame configuration register. */
+N    volatile uint32_t SLOTR;    /**< Slot register. */
+N    volatile uint32_t IM;       /**< Interrupt mask register. */
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t CLRFR;    /**< Clear flag register. */
+N    volatile uint32_t DR;       /**< Data register. */
+N} reg_sai_block_t;
+N
+N
+N/**
+N *  \struct reg_sai_t
+N *  \brief  Serial audio interface register.
+N *
+N *  Described in reference manual p.912ff.
+N */
+Ntypedef struct {
+N    volatile reg_sai_block_t BLOCK1;    /**< Audio subblock 1. */
+N    volatile reg_sai_block_t BLOCK2;    /**< Audio subblock 2. */
+N} reg_sai_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_sai_t sat1_testing;
+S    #define SAI1                    ( (reg_sai_t *) &sat1_testing )
+N#else
+N    #define SAI1                    ( (reg_sai_t *) 0x40015800 )
+N#endif
+N
+N/* Helper macros */
+N
+N#define SAI1_RCC_PATTERN        ( 0x1 << 22u )
+N#define SAI1_RESET()            REG_TGL(RCC->APB2RSTR,  SAI1_RCC_PATTERN)
+N#define SAI1_ENABLE()           REG_SET(RCC->APB2ENR,   SAI1_RCC_PATTERN)
+N#define SAI1_DISABLE()          REG_CLR(RCC->APB2ENR,   SAI1_RCC_PATTERN)
+N#define SAI1_LP_ENABLE()        REG_SET(RCC->APB2LPENR, SAI1_RCC_PATTERN)
+N#define SAI1_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, SAI1_RCC_PATTERN)
+N
+N
+N/*  USART - universal synchronous/asynchronous receiver transmitter
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_usart_t
+N *  \brief  Universal sync./async. receiver transmiter register.
+N *
+N *  Described in reference manual p.951ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t SR;       /**< Status register. */
+N    volatile uint32_t DR;       /**< Data register. */
+N    volatile uint32_t BRR;      /**< Baud rate register. */
+N    volatile uint32_t CR1;      /**< Configuration register 1. */
+N    volatile uint32_t CR2;      /**< Configuration register 2. */
+N    volatile uint32_t CR3;      /**< Configuration register 3. */
+N    volatile uint32_t GPTR;     /**< Guard time and prescaler. */
+N} reg_usart_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_usart_t usart1_testing;
+S    extern reg_usart_t usart2_testing;
+S    extern reg_usart_t usart3_testing;
+S    extern reg_usart_t uart4_testing;
+S    extern reg_usart_t uart5_testing;
+S    extern reg_usart_t usart6_testing;
+S    extern reg_usart_t usart7_testing;
+S    extern reg_usart_t usart8_testing;
+S    #define USART1                  ( (reg_usart_t *) &usart1_testing )
+S    #define USART2                  ( (reg_usart_t *) &usart2_testing )
+S    #define USART3                  ( (reg_usart_t *) &usart3_testing )
+S    #define UART4                   ( (reg_usart_t *) &uart4_testing )
+S    #define UART5                   ( (reg_usart_t *) &uart5_testing )
+S    #define USART6                  ( (reg_usart_t *) &usart6_testing )
+S    #define USART7                  ( (reg_usart_t *) &usart7_testing )
+S    #define USART8                  ( (reg_usart_t *) &usart8_testing )
+N#else
+N    #define USART1                  ( (reg_usart_t *) 0x40011000 )
+N    #define USART2                  ( (reg_usart_t *) 0x40004400 )
+N    #define USART3                  ( (reg_usart_t *) 0x40004800 )
+N    #define UART4                   ( (reg_usart_t *) 0x40004c00 )
+N    #define UART5                   ( (reg_usart_t *) 0x40005000 )
+N    #define USART6                  ( (reg_usart_t *) 0x40011400 )
+N    #define USART7                  ( (reg_usart_t *) 0x40007800 )
+N    #define USART8                  ( (reg_usart_t *) 0x40007c00 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define USART1_RCC_PATTERN      ( 0x1 << 4u )
+N#define USART1_RESET()          REG_TGL(RCC->APB2RSTR,  USART1_RCC_PATTERN)
+N#define USART1_ENABLE()         REG_SET(RCC->APB2ENR,   USART1_RCC_PATTERN)
+N#define USART1_DISABLE()        REG_CLR(RCC->APB2ENR,   USART1_RCC_PATTERN)
+N#define USART1_LP_ENABLE()      REG_SET(RCC->APB2LPENR, USART1_RCC_PATTERN)
+N#define USART1_LP_DISABLE()     REG_CLR(RCC->APB2LPENR, USART1_RCC_PATTERN)
+N
+N#define USART2_RCC_PATTERN      ( 0x1 << 17u )
+N#define USART2_RESET()          REG_TGL(RCC->APB1RSTR,  USART2_RCC_PATTERN)
+N#define USART2_ENABLE()         REG_SET(RCC->APB1ENR,   USART2_RCC_PATTERN)
+N#define USART2_DISABLE()        REG_CLR(RCC->APB1ENR,   USART2_RCC_PATTERN)
+N#define USART2_LP_ENABLE()      REG_SET(RCC->APB1LPENR, USART2_RCC_PATTERN)
+N#define USART2_LP_DISABLE()     REG_CLR(RCC->APB1LPENR, USART2_RCC_PATTERN)
+N
+N#define USART3_RCC_PATTERN      ( 0x1 << 18u )
+N#define USART3_RESET()          REG_TGL(RCC->APB1RSTR,  USART3_RCC_PATTERN)
+N#define USART3_ENABLE()         REG_SET(RCC->APB1ENR,   USART3_RCC_PATTERN)
+N#define USART3_DISABLE()        REG_CLR(RCC->APB1ENR,   USART3_RCC_PATTERN)
+N#define USART3_LP_ENABLE()      REG_SET(RCC->APB1LPENR, USART3_RCC_PATTERN)
+N#define USART3_LP_DISABLE()     REG_CLR(RCC->APB1LPENR, USART3_RCC_PATTERN)
+N
+N#define UART4_RCC_PATTERN       ( 0x1 << 19u )
+N#define UART4_RESET()           REG_TGL(RCC->APB1RSTR,  UART4_RCC_PATTERN)
+N#define UART4_ENABLE()          REG_SET(RCC->APB1ENR,   UART4_RCC_PATTERN)
+N#define UART4_DISABLE()         REG_CLR(RCC->APB1ENR,   UART4_RCC_PATTERN)
+N#define UART4_LP_ENABLE()       REG_SET(RCC->APB1LPENR, UART4_RCC_PATTERN)
+N#define UART4_LP_DISABLE()      REG_CLR(RCC->APB1LPENR, UART4_RCC_PATTERN)
+N
+N#define UART5_RCC_PATTERN       ( 0x1 << 20u )
+N#define UART5_RESET()           REG_TGL(RCC->APB1RSTR,  UART5_RCC_PATTERN)
+N#define UART5_ENABLE()          REG_SET(RCC->APB1ENR,   UART5_RCC_PATTERN)
+N#define UART5_DISABLE()         REG_CLR(RCC->APB1ENR,   UART5_RCC_PATTERN)
+N#define UART5_LP_ENABLE()       REG_SET(RCC->APB1LPENR, UART5_RCC_PATTERN)
+N#define UART5_LP_DISABLE()      REG_CLR(RCC->APB1LPENR, UART5_RCC_PATTERN)
+N
+N#define USART6_RCC_PATTERN      ( 0x1 << 5u )
+N#define USART6_RESET()          REG_TGL(RCC->APB2RSTR,  USART6_RCC_PATTERN)
+N#define USART6_ENABLE()         REG_SET(RCC->APB2ENR,   USART6_RCC_PATTERN)
+N#define USART6_DISABLE()        REG_CLR(RCC->APB2ENR,   USART6_RCC_PATTERN)
+N#define USART6_LP_ENABLE()      REG_SET(RCC->APB2LPENR, USART6_RCC_PATTERN)
+N#define USART6_LP_DISABLE()     REG_CLR(RCC->APB2LPENR, USART6_RCC_PATTERN)
+N
+N#define USART7_RCC_PATTERN      ( 0x1 << 30u )
+N#define USART7_RESET()          REG_TGL(RCC->APB1RSTR,  USART7_RCC_PATTERN)
+N#define USART7_ENABLE()         REG_SET(RCC->APB1ENR,   USART7_RCC_PATTERN)
+N#define USART7_DISABLE()        REG_CLR(RCC->APB1ENR,   USART7_RCC_PATTERN)
+N#define USART7_LP_ENABLE()      REG_SET(RCC->APB1LPENR, USART7_RCC_PATTERN)
+N#define USART7_LP_DISABLE()     REG_CLR(RCC->APB1LPENR, USART7_RCC_PATTERN)
+N
+N#define USART8_RCC_PATTERN      ( 0x1 << 31u )
+N#define USART8_RESET()          REG_TGL(RCC->APB1RSTR,  USART8_RCC_PATTERN)
+N#define USART8_ENABLE()         REG_SET(RCC->APB1ENR,   USART8_RCC_PATTERN)
+N#define USART8_DISABLE()        REG_CLR(RCC->APB1ENR,   USART8_RCC_PATTERN)
+N#define USART8_LP_ENABLE()      REG_SET(RCC->APB1LPENR, USART8_RCC_PATTERN)
+N#define USART8_LP_DISABLE()     REG_CLR(RCC->APB1LPENR, USART8_RCC_PATTERN)
+N
+N
+N/*  SDIO - secure digital input output
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_sdio_t
+N *  \brief  Representation of SDIO register.
+N *
+N *  Described in reference manual p.1003ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t POWER;    /**< Power control register. */
+N    volatile uint32_t CLKCR;    /**< Clock control register. */
+N    volatile uint32_t ARG;      /**< Argument register. */
+N    volatile uint32_t CMD;      /**< Command register. */
+N    volatile uint32_t RESPCMD;  /**< Command response register. */
+N    volatile uint32_t RESP1;    /**< Response register 1. */
+N    volatile uint32_t RESP2;    /**< Response register 2. */
+N    volatile uint32_t RESP3;    /**< Response register 3. */
+N    volatile uint32_t RESP4;    /**< Response register 4. */
+N    volatile uint32_t DTIMER;   /**< Data timer register. */
+N    volatile uint32_t DLEN;     /**< Data length register. */
+N    volatile uint32_t DCTRL;    /**< Data control register. */
+N    volatile uint32_t DCOUNT;   /**< Data counter register. */
+N    volatile uint32_t STA;      /**< Status register. */
+N    volatile uint32_t ICR;      /**< Interrupt clear register. */
+N    volatile uint32_t MASK;     /**< Mask register. */
+N    uint32_t RESERVED[2];
+N    volatile uint32_t FIFOCNT;  /**< FIFO count register. */
+N    volatile uint32_t FIFO;     /**< Data FIFO register. */
+N} reg_sdio_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_sdio_t sdio_testing;
+S    #define SDIO                    ( (reg_sdio_t *) &sdio_testing )
+N#else
+N    #define SDIO                    ( (reg_sdio_t *) 0x40006400 )
+N#endif
+N
+N/* Helper macros */
+N
+N#define SDIO_RCC_PATTERN        ( 0x1 << 11u )
+N#define SDIO_RESET()            REG_TGL(RCC->APB2RSTR,  SDIO_RCC_PATTERN)
+N#define SDIO_ENABLE()           REG_SET(RCC->APB2ENR,   SDIO_RCC_PATTERN)
+N#define SDIO_DISABLE()          REG_CLR(RCC->APB2ENR,   SDIO_RCC_PATTERN)
+N#define SDIO_LP_ENABLE()        REG_SET(RCC->APB2LPENR, SDIO_RCC_PATTERN)
+N#define SDIO_LP_DISABLE()       REG_CLR(RCC->APB2LPENR, SDIO_RCC_PATTERN)
+N
+N
+N/*  CAN - cxxx
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_can_t
+N *  \brief  Representation of CAN register.
+N *
+N *  Described in reference manual p.1059ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t MCR;          /** Master control register. */
+N    volatile uint32_t MSR;          /** Master status regiser. */
+N    volatile uint32_t TSR;          /** Transmit status register. */
+N    volatile uint32_t RF0R;         /** Receive FIFO0 register. */
+N    volatile uint32_t RF1R;         /** Receive FIFO1 register. */
+N    volatile uint32_t IER;          /** Interrupt enable register. */
+N    volatile uint32_t ESR;          /** Error status register. */
+N    volatile uint32_t BTR;          /** Bit timing register. */
+N    uint32_t RESERVED1[88];         
+N    volatile uint32_t TI0R;         /** TX mailbox identifier register 0. */
+N    volatile uint32_t TDT0R;        /** TX mailbox data length and
+N                                        time stamp register 0. */
+N    volatile uint32_t TDL0R;        /** TX mailbox data low register 0. */
+N    volatile uint32_t TDH0R;        /** TX mailbox data high register 0. */
+N    volatile uint32_t TI1R;         /** TX mailbox identifier register 1. */
+N    volatile uint32_t TDT1R;        /** TX mailbox data length and
+N                                        time stamp register 1. */
+N    volatile uint32_t TDL1R;        /** TX mailbox data low register 1. */
+N    volatile uint32_t TDH1R;        /** TX mailbox data high register 1. */
+N    volatile uint32_t TI2R;         /** TX mailbox identifier register 2. */
+N    volatile uint32_t TDT2R;        /** TX mailbox data length and
+N                                        time stamp register 2. */
+N    volatile uint32_t TDL2R;        /** TX mailbox data low register 2. */
+N    volatile uint32_t TDH2R;        /** TX mailbox data high register 2. */
+N    volatile uint32_t RI0R;         /** RX mailbox identifier register 0. */
+N    volatile uint32_t RDT0R;        /** RX mailbox data length and 
+N                                        time stamp register 0. */
+N    volatile uint32_t RDL0R;        /** RX mailbox data low register 0. */
+N    volatile uint32_t RDH0R;        /** RX mailbox data high register 0. */
+N    volatile uint32_t RI1R;         /** RX mailbox identifier register 1. */
+N    volatile uint32_t RDT1R;        /** RX mailbox data length and 
+N                                        time stamp register 1. */
+N    volatile uint32_t RDL1R;        /** RX mailbox data low register 1. */
+N    volatile uint32_t RDH1R;        /** RX mailbox data high register 1. */
+N    uint32_t RESERVED2[12];
+N    volatile uint32_t FMR;          /** Filter master register. */
+N    volatile uint32_t FM1R;         /** Filter mode register. */
+N    uint32_t RESERVED3;
+N    volatile uint32_t FS1R;         /** Filter scale register. */
+N    uint32_t RESERVED4;
+N    volatile uint32_t FFA1R;        /** Filter FIFO assignment register. */
+N    uint32_t RESERVED5;
+N    volatile uint32_t FA1R;         /** Filter activation register. */
+N    uint32_t RESERVED6[8];
+N    volatile uint32_t FR[28][2];    /** FR[x][1] Filter bank 1 register 1.
+N                                        FR[x][2] Filter bank 1 register 2. */
+N} reg_can_t;
+N
+N
+N/* Register macros */
+N
+N#ifdef TESTING
+S    extern reg_can_t can1_testing;
+S    extern reg_can_t can2_testing;
+S    #define CAN1                    ( (reg_can_t *) &can1_testing )
+S    #define CAN2                    ( (reg_can_t *) &can2_testing )
+N#else
+N    #define CAN1                    ( (reg_can_t *) 0x40006400 )
+N    #define CAN2                    ( (reg_can_t *) 0x40006800 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define CAN1_RCC_PATTERN        ( 0x1 << 25u )
+N#define CAN1_RESET()            REG_TGL(RCC->APB1RSTR,  CAN1_RCC_PATTERN)
+N#define CAN1_ENABLE()           REG_SET(RCC->APB1ENR,   CAN1_RCC_PATTERN)
+N#define CAN1_DISABLE()          REG_CLR(RCC->APB1ENR,   CAN1_RCC_PATTERN)
+N#define CAN1_LP_ENABLE()        REG_SET(RCC->APB1LPENR, CAN1_RCC_PATTERN)
+N#define CAN1_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, CAN1_RCC_PATTERN)
+N
+N#define CAN2_RCC_PATTERN        ( 0x1 << 26u )
+N#define CAN2_RESET()            REG_TGL(RCC->APB1RSTR,  CAN2_RCC_PATTERN)
+N#define CAN2_ENABLE()           REG_SET(RCC->APB1ENR,   CAN2_RCC_PATTERN)
+N#define CAN2_DISABLE()          REG_CLR(RCC->APB1ENR,   CAN2_RCC_PATTERN)
+N#define CAN2_LP_ENABLE()        REG_SET(RCC->APB1LPENR, CAN2_RCC_PATTERN)
+N#define CAN2_LP_DISABLE()       REG_CLR(RCC->APB1LPENR, CAN2_RCC_PATTERN)
+N
+N
+N/*  FMC - flexible memory controller
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_fmc_sram_t
+N *  \brief  Representation of SRAM register (Bank 1).
+N */
+Ntypedef struct {
+N    volatile uint32_t BCR1;     /**< (Sub)Bank 1 control register. */
+N    volatile uint32_t BTR1;     /**< (Sub)Bank 1 timing registers. */
+N    volatile uint32_t BCR2;     /**< (Sub)Bank 2 control register. */
+N    volatile uint32_t BTR2;     /**< (Sub)Bank 2 timing registers. */
+N    volatile uint32_t BCR3;     /**< (Sub)Bank 3 control register. */
+N    volatile uint32_t BTR3;     /**< (Sub)Bank 3 timing registers. */
+N    volatile uint32_t BCR4;     /**< (Sub)Bank 4 control register. */
+N    volatile uint32_t BTR4;     /**< (Sub)Bank 4 timing registers. */
+N    uint32_t RESERVED1[57];
+N    volatile uint32_t BWTR1;    /**< (Sub)Bank 1 write timing registers. */
+N    uint32_t RESERVED2;
+N    volatile uint32_t BWTR2;    /**< (Sub)Bank 2 write timing registers. */
+N    uint32_t RESERVED3;
+N    volatile uint32_t BWTR3;    /**< (Sub)Bank 3 write timing registers. */
+N    uint32_t RESERVED4;
+N    volatile uint32_t BWTR4;    /**< (Sub)Bank 4 write timing registers. */
+N} reg_fmc_sram_t;
+N	
+N
+N/**
+N *  \struct reg_fmc_t
+N *  \brief  Representation of FMC register.
+N *
+N *  Described in reference manual p.1580ff.
+N */
+Ntypedef struct {
+N    reg_fmc_sram_t SRAM;        /**< SRAM registers (Bank 1). */
+N} reg_fmc_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_fmc_t fmc_testing;
+S    #define FMC                     ( (reg_fmc_t *) &fmc_testing )
+N#else
+N    #define FMC                     ( (reg_fmc_t *) 0xa0000000 )
+N#endif
+N
+N
+N/* Helper macros */
+N
+N#define FMC_RCC_PATTERN         ( 0x1 << 0u )
+N#define FMC_RESET()             REG_TGL(RCC->AHB3RSTR,  FMC_RCC_PATTERN)
+N#define FMC_ENABLE()            REG_SET(RCC->AHB3ENR,   FMC_RCC_PATTERN)
+N#define FMC_DISABLE()           REG_CLR(RCC->AHB3ENR,   FMC_RCC_PATTERN)
+N#define FMC_LP_ENABLE()         REG_SET(RCC->AHB3LPENR, FMC_RCC_PATTERN)
+N#define FMC_LP_DISABLE()        REG_CLR(RCC->AHB3LPENR, FMC_RCC_PATTERN)
+N
+N
+N/*  MPU - memory protection unit
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_mpu_t
+N *  \brief  Representation of MPU register.
+N *
+N *  Described in programming manual p.178ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t TYPER;    /**< Type register. */
+N    volatile uint32_t CTRL;     /**< Control register. */
+N    volatile uint32_t RNR;      /**< Region number register. */
+N    volatile uint32_t RBAR;     /**< Region base address register. */
+N    volatile uint32_t RASR;     /**< Region sttribute and size register. */
+N} reg_mpu_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_mpu_t mpu_testing;
+S    #define MPU                     ( (reg_mpu_t *) &mpu_testing )
+N#else
+N    #define MPU                     ( (reg_mpu_t *) 0xe000ed90 )
+N#endif
+N
+N
+N/*  SCB - system control block
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_scb_t
+N *  \brief  Representation of SCB register.
+N *
+N *  Described in programming manual p.206ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CPUID;    /**< CPU ID register. */
+N    volatile uint32_t ICSR;     /**< Interrupt control/state register. */
+N    volatile uint32_t VTOR;     /**< Vector table offset register. */
+N    volatile uint32_t AIRCR;    /**< Application irq/reset control register. */
+N    volatile uint32_t SCR;      /**< System control register. */
+N    volatile uint32_t CCR;      /**< Configuration control register. */
+N    volatile uint32_t SHPR1;    /**< System handler priority register 1. */
+N    volatile uint32_t SHPR2;    /**< System handler priority register 2. */
+N    volatile uint32_t SHPR3;    /**< System handler priority register 3. */
+N    volatile uint32_t SHCSR;    /**< System handler control/status register. */
+N    volatile uint32_t CFSR;     /**< Configurable fault status register.
+N                                     UFSR: Usage fault status register. 
+N                                     BFSR: Bus fault status register. 
+N                                     MMFSR: Memory managm. fault status reg. */
+N    volatile uint32_t HFSR;     /**< Hard fault status register. */
+N    uint32_t RESERVED;
+N    volatile uint32_t MMAR;     /**< Memory management fault addr. register. */
+N    volatile uint32_t BFAR;     /**< Bus fault address register. */
+N    volatile uint32_t AFSR;     /**< Auxiliary fault status register. */
+N} reg_scb_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_scb_t scb_testing;
+S    #define SCB                     ( (reg_scb_t *) &scb_testing )
+N#else
+N    #define SCB                     ( (reg_scb_t *) 0xe000ed00 )
+N#endif
+N
+N
+N/*  STK - system tick timer
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_stk_t
+N *  \brief  Representation of STK register.
+N *
+N *  Described in programming manual p.230ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CTRL;     /**< Control and status register. */
+N    volatile uint32_t LOAD;     /**< Reload value register. */
+N    volatile uint32_t VAL;      /**< Current value register. */
+N    volatile uint32_t CALIB;    /**< Calibration value register. */
+N} reg_stk_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_stk_t stk_testing;
+S    #define STK                     ( (reg_stk_t *) &stk_testing )
+N#else
+N    #define STK                     ( (reg_stk_t *) 0xe000e010 )
+N#endif
+N
+N
+N/*  FPU - floating point unit
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_fpu_t
+N *  \brief  Representation of FPU register.
+N *
+N *  Described in programming manual p.236ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t CPACR;    /**< Coprocessor access control register. */
+N    uint32_t RESERVED[106];
+N    volatile uint32_t FPCCR;    /**< Floating point context control reg. */
+N    volatile uint32_t FPCAR;    /**< Floating point context address reg. */
+N    volatile uint32_t FPDSCR;   /**< Floating point status control register. */
+N} reg_fpu_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_fpu_t fpu_testing;
+S    #define FPU                     ( (reg_fpu_t *) &fpu_testing )
+N#else
+N    #define FPU                     ( (reg_fpu_t *) 0xe000ed88 )
+N#endif
+N
+N
+N/*  DBG - debug support
+N * ------------------------------------------------------------------------- */
+N
+N/**
+N *  \struct reg_dbg_t
+N *  \brief  Representation of DBG register.
+N *
+N *  Described in reference manual p.1655ff.
+N */
+Ntypedef struct {
+N    volatile uint32_t IDCODE;   /**< Device ID. */
+N    volatile uint32_t CR;       /**< Control register. */
+N    volatile uint32_t APB1_FZ;  /**< APB1 freeze register. */
+N    volatile uint32_t APB2_FZ;  /**< APB2 freeze register. */
+N} reg_dbg_t;
+N
+N
+N/* Register macro */
+N
+N#ifdef TESTING
+S    extern reg_dbg_t dbg_testing;
+S    #define DBG                     ( (reg_dbg_t *) &dbg_testing )
+N#else
+N    #define DBG                     ( (reg_dbg_t *) 0xe0042000 )
+N#endif
+N
+N
+N/*  SRAM - static RAM
+N * ------------------------------------------------------------------------- */
+N
+N/* Helper macros */
+N
+N#define SRAM1_RCC_PATTERN       ( 0x1 << 16u )
+N#define SRAM1_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, SRAM1_RCC_PATTERN)
+N#define SRAM1_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, SRAM1_RCC_PATTERN)
+N
+N#define SRAM2_RCC_PATTERN       ( 0x1 << 17u )
+N#define SRAM2_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, SRAM2_RCC_PATTERN)
+N#define SRAM2_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, SRAM2_RCC_PATTERN)
+N
+N#define SRAM3_RCC_PATTERN       ( 0x1 << 19u )
+N#define SRAM3_LP_ENABLE()       REG_SET(RCC->AHB1LPENR, SRAM3_RCC_PATTERN)
+N#define SRAM3_LP_DISABLE()      REG_CLR(RCC->AHB1LPENR, SRAM3_RCC_PATTERN)
+N
+N
+N/*  BKPSRAM - backup static RAM
+N * ------------------------------------------------------------------------- */
+N
+N/* Helper macros */
+N
+N#define BKPSRAM_RCC_PATTERN     ( 0x1 << 18u )
+N#define BKPSRAM_ENABLE()        REG_SET(RCC->AHB3ENR,   BKPSRAM_RCC_PATTERN)
+N#define BKPSRAM_DISABLE()       REG_CLR(RCC->AHB3ENR,   BKPSRAM_RCC_PATTERN)
+N#define BKPSRAM_LP_ENABLE()     REG_SET(RCC->AHB1LPENR, BKPSRAM_RCC_PATTERN)
+N#define BKPSRAM_LP_DISABLE()    REG_CLR(RCC->AHB1LPENR, BKPSRAM_RCC_PATTERN)
+N
+N
+N/*  CCM - core coupled memory
+N * ------------------------------------------------------------------------- */
+N
+N/* Helper macros */
+N
+N#define CCM_RCC_PATTERN         ( 0x1 << 20u )
+N#define CCM_ENABLE()            REG_SET(RCC->AHB1ENR,   CCM_RCC_PATTERN)
+N#define CCM_DISABLE()           REG_CLR(RCC->AHB1ENR,   CCM_RCC_PATTERN)
+N
+N
+N#endif
+L 20 "RTE\HAL\CT_Board_HS14_M0\hal_rcc.c" 2
+N
+N
+N/* -- Macros
+N * ------------------------------------------------------------------------- */
+N
+N#define TIME_OUT        0x5000
+N
+N
+N/* -- Public function definitions
+N * ------------------------------------------------------------------------- */
+N
+N/*
+N * See header file
+N */
+Nvoid hal_rcc_reset(void)
+N{
+N    /* Set RCC->CR to default values */
+N    RCC->CR |= 0x00000001;   // Set HSION bit first -> keep cpu running
+X    ( (reg_rcc_t *) 0x40023800 )->CR |= 0x00000001;   
+N    RCC->CR &= 0xeaf6ffff;   // Reset HSEON, CSSON, PLLON, PLLI2S,
+X    ( (reg_rcc_t *) 0x40023800 )->CR &= 0xeaf6ffff;   
+N                             //   PLLSAI bits (STM32F42xx/43xx)
+N    RCC->CR &= 0xfffbffff;   // Reset HSEBYP bit
+X    ( (reg_rcc_t *) 0x40023800 )->CR &= 0xfffbffff;   
+N    
+N    /* Reset RCC->CFGR to default values */
+N    RCC->CFGR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->CFGR = 0u;
+N    
+N    /* Reset RCC->PLLxCFGR to default values */
+N    RCC->PLLCFGR = 0x24003010;
+X    ( (reg_rcc_t *) 0x40023800 )->PLLCFGR = 0x24003010;
+N    RCC->PLLI2SCFGR = 0x20003000;
+X    ( (reg_rcc_t *) 0x40023800 )->PLLI2SCFGR = 0x20003000;
+N    RCC->PLLSAICFGR = 0x24003000;  // only STM32F42xx/43xx)    
+X    ( (reg_rcc_t *) 0x40023800 )->PLLSAICFGR = 0x24003000;  
+N    
+N    /* Disable all interrupts */
+N    RCC->CIR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->CIR = 0u;
+N    
+N    /* Disable all peripherals */
+N    RCC->AHB1RSTR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->AHB1RSTR = 0u;
+N    RCC->AHB2RSTR = 0u;  
+X    ( (reg_rcc_t *) 0x40023800 )->AHB2RSTR = 0u;  
+N    RCC->AHB3RSTR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->AHB3RSTR = 0u;
+N    RCC->APB1RSTR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->APB1RSTR = 0u;
+N    RCC->APB2RSTR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->APB2RSTR = 0u;
+N    RCC->AHB1ENR = 0x00100000;
+X    ( (reg_rcc_t *) 0x40023800 )->AHB1ENR = 0x00100000;
+N    RCC->AHB2ENR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->AHB2ENR = 0u;
+N    RCC->AHB3ENR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->AHB3ENR = 0u;
+N    RCC->APB1ENR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->APB1ENR = 0u;
+N    RCC->APB2ENR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->APB2ENR = 0u;
+N    RCC->AHB1LPENR = 0x7e6791ff;
+X    ( (reg_rcc_t *) 0x40023800 )->AHB1LPENR = 0x7e6791ff;
+N    RCC->AHB2LPENR = 0x000000f1;
+X    ( (reg_rcc_t *) 0x40023800 )->AHB2LPENR = 0x000000f1;
+N    RCC->AHB3LPENR = 0x00000001;
+X    ( (reg_rcc_t *) 0x40023800 )->AHB3LPENR = 0x00000001;
+N    RCC->APB1LPENR = 0x36fec9ff;
+X    ( (reg_rcc_t *) 0x40023800 )->APB1LPENR = 0x36fec9ff;
+N    RCC->APB2LPENR = 0x00075f33;
+X    ( (reg_rcc_t *) 0x40023800 )->APB2LPENR = 0x00075f33;
+N    
+N    /* Reset forgotten registers */
+N    RCC->BDCR = 0u;
+X    ( (reg_rcc_t *) 0x40023800 )->BDCR = 0u;
+N    RCC->CSR = 0x0e000000; 
+X    ( (reg_rcc_t *) 0x40023800 )->CSR = 0x0e000000; 
+N    RCC->SSCGR = 0u;   
+X    ( (reg_rcc_t *) 0x40023800 )->SSCGR = 0u;   
+N    RCC->DCKCFGR = 0u;   
+X    ( (reg_rcc_t *) 0x40023800 )->DCKCFGR = 0u;   
+N}
+N
+N
+N/*
+N * See header file
+N */
+Nvoid hal_rcc_set_peripheral(hal_peripheral_t peripheral, hal_bool_t status)
+N{
+N    volatile uint32_t *reg;
+N    uint32_t bit_pos;
+N    
+N    /* Select correct enable register */
+N    switch (peripheral) {
+N        /* AHB1 */
+N        case PER_GPIOA:
+N            bit_pos = 0u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOB:
+N            bit_pos = 1u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOC:
+N            bit_pos = 2u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOD:
+N            bit_pos = 3u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOE:
+N            bit_pos = 4u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOF:
+N            bit_pos = 5u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOG:
+N            bit_pos = 6u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOH:
+N            bit_pos = 7u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOI:
+N            bit_pos = 8u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOJ:
+N            bit_pos = 9u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_GPIOK:
+N            bit_pos = 10u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_DMA1:
+N            bit_pos = 21u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N        case PER_DMA2:
+N            bit_pos = 22u;
+N            reg = &RCC->AHB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB1ENR;
+N            break;
+N            
+N        /* AHB3 */
+N        case PER_FMC:
+N            bit_pos = 0u;
+N            reg = &RCC->AHB3ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->AHB3ENR;
+N            break;
+N            
+N        /* APB1 */
+N        case PER_DAC:
+N            bit_pos = 29u;
+N            reg = &RCC->APB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB1ENR;
+N            break;
+N        case PER_PWR:
+N            bit_pos = 28u;
+N            reg = &RCC->APB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB1ENR;
+N            break;
+N        case PER_TIM2:
+N            bit_pos = 0u;
+N            reg = &RCC->APB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB1ENR;
+N            break;
+N        case PER_TIM3:
+N            bit_pos = 1u;
+N            reg = &RCC->APB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB1ENR;
+N            break;
+N        case PER_TIM4:
+N            bit_pos = 2u;
+N            reg = &RCC->APB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB1ENR;
+N            break;
+N        case PER_TIM5:
+N            bit_pos = 3u;
+N            reg = &RCC->APB1ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB1ENR;
+N            break;
+N            
+N        
+N        /* APB2 */
+N        case PER_ADC1:
+N            bit_pos = 8u;
+N            reg = &RCC->APB2ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB2ENR;
+N            break;
+N        case PER_ADC2:
+N            bit_pos = 9u;
+N            reg = &RCC->APB2ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB2ENR;
+N            break;
+N        case PER_ADC3:
+N            bit_pos = 10u;
+N            reg = &RCC->APB2ENR;
+X            reg = &( (reg_rcc_t *) 0x40023800 )->APB2ENR;
+N            break;
+N        
+N        default:
+N            return;
+N    }
+N    
+N    if (status == DISABLE) {
+N        *reg &= ~(1u << bit_pos);
+N    } else {
+N        *reg |= (1u << bit_pos);
+N    }
+N}
+N
+N
+N/*
+N * See header file
+N */
+Nhal_bool_t hal_rcc_set_osc(hal_rcc_osc_t source, hal_bool_t status)
+N{
+N    uint32_t reg = 0;
+N    uint32_t count = 0;
+N    
+N    /* Disable source */
+N    if (status == DISABLE) {
+N        RCC->CR &= ~(1u << source);
+X        ( (reg_rcc_t *) 0x40023800 )->CR &= ~(1u << source);
+N        return DISABLED;
+N    }
+N    
+N    /* If pll, check if source is ok */
+N    if (source == HAL_RCC_OSC_PLL ||
+N        source == HAL_RCC_OSC_PLLI2S ||
+N        source == HAL_RCC_OSC_PLLSAI) 
+N    {
+N        reg = RCC->CR;
+X        reg = ( (reg_rcc_t *) 0x40023800 )->CR;
+N        /* HSE */
+N        if (RCC->PLLCFGR & ~(1u << 22u)) {
+X        if (( (reg_rcc_t *) 0x40023800 )->PLLCFGR & ~(1u << 22u)) {
+N            reg &= (1u << (HAL_RCC_OSC_HSE + 1u));
+N        }
+N        /* HSI */
+N        else {
+N            reg &= (1u << (HAL_RCC_OSC_HSI + 1u));
+N        }
+N        /* Return if source is not ok */
+N        if (!reg) {
+N            return DISABLED;
+N        }
+N    }
+N    
+N    /* Enable source */    
+N    RCC->CR |= (1u << source);
+X    ( (reg_rcc_t *) 0x40023800 )->CR |= (1u << source);
+N    
+N    /* Wait till source is ready and if time out is reached exit */
+N    reg = RCC->CR & (1u << (source + 1u));
+X    reg = ( (reg_rcc_t *) 0x40023800 )->CR & (1u << (source + 1u));
+N    while ((reg == 0) && (count != TIME_OUT)) {
+X    while ((reg == 0) && (count != 0x5000)) {
+N        reg = RCC->CR & (1u << (source + 1u));
+X        reg = ( (reg_rcc_t *) 0x40023800 )->CR & (1u << (source + 1u));
+N        count++;
+N    } 
+N    
+N    /* Return */
+N    if (reg != 0) {
+N        return ENABLED;
+N    }
+N    return DISABLED;
+N}
+N
+N
+N/*
+N * See header file
+N */
+Nvoid hal_rcc_setup_pll(hal_rcc_osc_t pll, hal_rcc_pll_init_t init)
+N{
+N    /* Input check */
+N    if (init.m_divider < 2u) init.m_divider = 2u;
+N    
+N    if (init.n_factor < 2u) init.n_factor = 2u;
+N    if (init.n_factor > 432u) init.n_factor = 432u;
+N    
+N    if (init.p_divider > 8u) init.p_divider = 8u;
+N    
+N    if (init.q_divider < 2u) init.q_divider = 2u;
+N    
+N    init.r_divider &= 0x07;
+N    
+N    /* Set source or return if invalid */
+N    if (init.source == HAL_RCC_OSC_HSI) {
+N        RCC->PLLCFGR &= ~(1u << 22u);
+X        ( (reg_rcc_t *) 0x40023800 )->PLLCFGR &= ~(1u << 22u);
+N    } else if (init.source == HAL_RCC_OSC_HSE) {
+N        RCC->PLLCFGR |= (1u << 22u);
+X        ( (reg_rcc_t *) 0x40023800 )->PLLCFGR |= (1u << 22u);
+N    } else {
+N        return;
+N    }
+N    
+N    /* Set pll preescaler */
+N    RCC->PLLCFGR &= ~(0x3f);
+X    ( (reg_rcc_t *) 0x40023800 )->PLLCFGR &= ~(0x3f);
+N    RCC->PLLCFGR |= init.m_divider;
+X    ( (reg_rcc_t *) 0x40023800 )->PLLCFGR |= init.m_divider;
+N    
+N    /* Configure pll */
+N    switch (pll) {
+N        case HAL_RCC_OSC_PLL:
+N            RCC->PLLCFGR &= ~0x0f037fc0;
+X            ( (reg_rcc_t *) 0x40023800 )->PLLCFGR &= ~0x0f037fc0;
+N            RCC->PLLCFGR |= (init.n_factor << 6u);
+X            ( (reg_rcc_t *) 0x40023800 )->PLLCFGR |= (init.n_factor << 6u);
+N            RCC->PLLCFGR |= (((init.p_divider - 1) >> 1u) << 16u);
+X            ( (reg_rcc_t *) 0x40023800 )->PLLCFGR |= (((init.p_divider - 1) >> 1u) << 16u);
+N            RCC->PLLCFGR |= (init.q_divider << 24u);
+X            ( (reg_rcc_t *) 0x40023800 )->PLLCFGR |= (init.q_divider << 24u);
+N            break;
+N        
+N        case HAL_RCC_OSC_PLLI2S:
+N            RCC->PLLI2SCFGR &= ~0x7f007fc0;
+X            ( (reg_rcc_t *) 0x40023800 )->PLLI2SCFGR &= ~0x7f007fc0;
+N            RCC->PLLI2SCFGR |= (init.n_factor << 6u);
+X            ( (reg_rcc_t *) 0x40023800 )->PLLI2SCFGR |= (init.n_factor << 6u);
+N            RCC->PLLI2SCFGR |= (init.q_divider << 24u);
+X            ( (reg_rcc_t *) 0x40023800 )->PLLI2SCFGR |= (init.q_divider << 24u);
+N            RCC->PLLI2SCFGR |= (init.r_divider << 28u);
+X            ( (reg_rcc_t *) 0x40023800 )->PLLI2SCFGR |= (init.r_divider << 28u);
+N            break;
+N        
+N/*        case HAL_RCC_OSC_PLLSAI:
+N            RCC->PLLSAICFGR &= ~0x7f007fc0;
+N            RCC->PLLSAICFGR |= (init.n_factor << 6u);
+N            RCC->PLLSAICFGR |= (init.q_divider << 24u);
+N            RCC->PLLSAICFGR |= (init.r_divider << 28u);
+N            break;
+N*/        
+N        default:
+N            break;
+N    }
+N}
+N
+N
+N/*
+N * See header file
+N */
+Nvoid hal_rcc_setup_clock(hal_rcc_clk_init_t init)
+N{
+N    uint32_t reg = 0;
+N
+N    /* Configure clock divider */
+N    RCC->CFGR &= ~0x0000fcf0;
+X    ( (reg_rcc_t *) 0x40023800 )->CFGR &= ~0x0000fcf0;
+N    RCC->CFGR |= (init.hpre << 4u);
+X    ( (reg_rcc_t *) 0x40023800 )->CFGR |= (init.hpre << 4u);
+N    RCC->CFGR |= (init.ppre1 << 10u);
+X    ( (reg_rcc_t *) 0x40023800 )->CFGR |= (init.ppre1 << 10u);
+N    RCC->CFGR |= (init.ppre2 << 13u);
+X    ( (reg_rcc_t *) 0x40023800 )->CFGR |= (init.ppre2 << 13u);
+N    
+N    /* Select system clock source */
+N    RCC->CFGR &= ~0x00000003;
+X    ( (reg_rcc_t *) 0x40023800 )->CFGR &= ~0x00000003;
+N    switch (init.osc) {
+N        default:
+N        case HAL_RCC_OSC_HSI:
+N            reg = 0u;
+N            break;
+N        
+N        case HAL_RCC_OSC_HSE:
+N            reg = 1u;
+N            break;
+N        
+N        case HAL_RCC_OSC_PLL:
+N            reg = 2u;
+N            break;
+N    }
+N    RCC->CFGR |= reg;
+X    ( (reg_rcc_t *) 0x40023800 )->CFGR |= reg;
+N    
+N#ifndef TESTING
+N    /* Wait till system clock is selected */
+N    while ((RCC->CFGR & 0x0000000c) != (reg << 2u));
+X    while ((( (reg_rcc_t *) 0x40023800 )->CFGR & 0x0000000c) != (reg << 2u));
+N#endif
+N}

@@ -49,7 +49,7 @@
             <InvalidFlash>1</InvalidFlash>
           </TargetStatus>
           <OutputDirectory>.\build\</OutputDirectory>
-          <OutputName>bitmanipulation</OutputName>
+          <OutputName>transbf</OutputName>
           <CreateExecutable>1</CreateExecutable>
           <CreateLib>0</CreateLib>
           <CreateHexFile>0</CreateHexFile>
@@ -172,8 +172,8 @@
             <AdsLsun>1</AdsLsun>
             <AdsLven>1</AdsLven>
             <AdsLsxf>1</AdsLsxf>
-            <RvctClst>0</RvctClst>
-            <GenPPlst>0</GenPPlst>
+            <RvctClst>1</RvctClst>
+            <GenPPlst>1</GenPPlst>
             <AdsCpuType>"Cortex-M0"</AdsCpuType>
             <RvctDeviceName></RvctDeviceName>
             <mOS>0</mOS>
@@ -384,14 +384,9 @@
           <GroupName>app</GroupName>
           <Files>
             <File>
-              <FileName>main.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\main.c</FilePath>
-            </File>
-            <File>
-              <FileName>utils_ctboard.c</FileName>
-              <FileType>1</FileType>
-              <FilePath>.\app\utils_ctboard.c</FilePath>
+              <FileName>transbf.s</FileName>
+              <FileType>2</FileType>
+              <FilePath>.\app\transbf.s</FilePath>
             </File>
           </Files>
         </Group>
